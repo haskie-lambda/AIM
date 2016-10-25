@@ -1,7 +1,6 @@
 package com.protonmail.fabian.schneider.aim;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -128,7 +127,7 @@ public class AIM_start extends AppCompatActivity {
 
         private float volume;
 
-        public int strengthSound[] = new int[5];
+        private int strengthSound[] = new int[5];
 
         protected void init(){
             System.out.println("started audio initialization");
@@ -261,32 +260,28 @@ public class AIM_start extends AppCompatActivity {
                 //audioOut aO = new audioOut();
                 //aO.exec();[
                 System.out.println("before BoolCheck: " + loaded);
-                if(true){ //this.loaded
+                //if(true){ //this.loaded
                     System.out.println("before audioOut");
-                    float leftVolumn = volume;
-                    float rightVolumn = volume;
                     int tmpStrength = Integer.parseInt(values[0]);
                     int streamId = audioOutput(tmpStrength);
-                }
+                //}
             }
         }
 
         protected int audioOutput(int tmpStrength) {
             System.out.println("audioOut called");
-            float leftVolumn = volume;
-            float rightVolumn = volume;
             int actRes;
             //return this.soundPool.play(this.strengthSound[tmpStrength], leftVolumn, rightVolumn, 1, 0, 1f);
             if(tmpStrength == 0) {
-                actRes = R.raw.strength0;
+                actRes = R.raw.strength1s;
             } else if (tmpStrength == 1) {
-                actRes = R.raw.strength1;
+                actRes = R.raw.strength2s;
             } else if(tmpStrength == 2) {
-                actRes = R.raw.strength2;
+                actRes = R.raw.strength3s;
             } else if(tmpStrength == 3) {
-                actRes = R.raw.strength3;
+                actRes = R.raw.strength4s;
             } else {
-                actRes = R.raw.strength4;
+                actRes = R.raw.strength0s;
             }
             System.out.println("actRes: " + actRes);
             MediaPlayer mediaPlayerOut = MediaPlayer.create(tThis, actRes);
