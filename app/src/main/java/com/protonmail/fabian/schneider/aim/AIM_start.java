@@ -1,6 +1,8 @@
 package com.protonmail.fabian.schneider.aim;
 
+import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -62,7 +64,7 @@ public class AIM_start extends AppCompatActivity {
         calc.init();
         status = (TextView) findViewById(R.id.statusView);
         output = (TextView) findViewById(R.id.lbl_output);
-
+        final Intent intent = new Intent(this, AIMService.class);
         startButton = (Button) findViewById(R.id.start_aim);
         startButton.setOnClickListener(new View.OnClickListener (){
             public void onClick(View v) {
@@ -70,13 +72,15 @@ public class AIM_start extends AppCompatActivity {
                     func = true;
                     startButton.setText("Stop AIM");
                     status.setText("AIM-Started");
-                    calc = new start_AIM();
-                    calc.execute();
+                    //calc = new start_AIM();
+                    //calc.execute();
+                    startService(intent);
                 } else {
                     func = false;
                     startButton.setText("Start AIM");
-                    calc.cancel(false);
-                    status.setText("AIM-Stopped");
+                    //calc.cancel(false);
+                    //status.setText("AIM-Stopped");
+                    stopService(intent);
                 }
             }
         });
@@ -117,7 +121,7 @@ public class AIM_start extends AppCompatActivity {
     }
 
 
-
+ // analysis in main thread
     class start_AIM extends AsyncTask<String, String, String> {
         private SoundPool soundPool;
         private AudioManager audioManager;
