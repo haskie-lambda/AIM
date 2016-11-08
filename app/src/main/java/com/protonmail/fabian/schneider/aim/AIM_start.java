@@ -1,6 +1,7 @@
 package com.protonmail.fabian.schneider.aim;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
@@ -36,6 +37,7 @@ public class AIM_start extends AppCompatActivity {
     public Context tThis;
     public TextView status;
     private Button startButton;
+    private Button stopButton;
     public TextView output;
     private CheckBox adOp;
     private CheckBox adOut;
@@ -44,6 +46,7 @@ public class AIM_start extends AppCompatActivity {
     private CheckBox notify;
     private CheckBox deamon;
     private CheckBox dispInApp;
+    public Intent newintent;
 
     start_AIM calc = new start_AIM();
     private boolean func = false;
@@ -64,27 +67,34 @@ public class AIM_start extends AppCompatActivity {
         calc.init();
         status = (TextView) findViewById(R.id.statusView);
         output = (TextView) findViewById(R.id.lbl_output);
-        final Intent intent = new Intent(this, AIMService.class);
+        newintent = new Intent(tThis, AIMServiceMain.class);
         startButton = (Button) findViewById(R.id.start_aim);
         startButton.setOnClickListener(new View.OnClickListener (){
             public void onClick(View v) {
-                if (!func) {
-                    func = true;
-                    startButton.setText("Stop AIM");
+                //if (!func) {
+                //    func = true;
+                //    startButton.setText("Stop AIM");
                     status.setText("AIM-Started");
                     //calc = new start_AIM();
                     //calc.execute();
-                    startService(intent);
-                } else {
-                    func = false;
-                    startButton.setText("Start AIM");
+                    //tThis.startService(intent);
+                    startService(newintent);
+                //} else {
+                //    func = false;
+                //    startButton.setText("Start AIM");
                     //calc.cancel(false);
                     //status.setText("AIM-Stopped");
-                    stopService(intent);
-                }
+                //    tThis.stopService(newintent);
+                //}
             }
         });
-
+        stopButton = (Button) findViewById(R.id.stop_AIM);
+        stopButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                status.setText("AIM-Stopped");
+                stopService(newintent);
+            }
+        });
         //options
         adOp = (CheckBox) findViewById(R.id.cbox_adOP);
         adOut = (CheckBox) findViewById(R.id.cbox_adOut);
@@ -160,10 +170,8 @@ public class AIM_start extends AppCompatActivity {
                 public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                     loaded = true;
                     System.out.println("finished loading resources");
-                    //publishProgress("finished loading resources");
-                    //SoundPool.Builder(new SoundPool.Builder()).play(strengthSound[0],volume,volume,1,0,1f);
-                    MediaPlayer mediaPlayer = MediaPlayer.create(tThis, R.raw.strength0);
-                    mediaPlayer.start();
+                    //MediaPlayer mediaPlayer = MediaPlayer.create(tThis, R.raw.strength0);
+                    //mediaPlayer.start();
                 }
             });
             System.out.println("starting tone init");

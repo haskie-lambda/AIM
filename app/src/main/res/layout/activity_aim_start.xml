@@ -9,6 +9,26 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.protonmail.fabian.schneider.aim.AIM_start">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start AIM"
+        android:id="@+id/button3"
+        android:layout_marginTop="18dp"
+        android:layout_below="@+id/textView"
+        android:layout_alignRight="@+id/cbox_adOP"
+        android:layout_alignEnd="@+id/cbox_adOP" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start AIM"
+        android:id="@+id/button2"
+        android:layout_marginTop="18dp"
+        android:layout_below="@+id/textView"
+        android:layout_alignRight="@+id/cbox_adOP"
+        android:layout_alignEnd="@+id/cbox_adOP" />
+
     <RadioButton
         android:text="Bluetooth Output"
         android:layout_width="wrap_content"
@@ -97,26 +117,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start AIM"
-        android:id="@+id/start_aim"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="[OUTPUT]"
-        android:id="@+id/lbl_output"
-        android:layout_below="@+id/start_aim"
-        android:layout_alignRight="@+id/start_aim"
-        android:layout_alignEnd="@+id/start_aim"
-        android:layout_marginTop="10dp" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -126,5 +126,37 @@
         android:textSize="25dp"
         android:layout_below="@+id/lbl_output"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start AIM"
+        android:id="@+id/start_aim"
+        android:layout_marginTop="18dp"
+        android:layout_below="@+id/textView"
+        android:layout_alignRight="@+id/cbox_adOP"
+        android:layout_alignEnd="@+id/cbox_adOP" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="[OUTPUT]"
+        android:id="@+id/lbl_output"
+        android:layout_below="@+id/start_aim"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp" />
+
+    <Button
+        android:text="Stop AIM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/stop_AIM"
+        android:layout_alignBaseline="@+id/button3"
+        android:layout_alignBottom="@+id/button3"
+        android:layout_toRightOf="@+id/cbox_disp"
+        android:layout_toEndOf="@+id/cbox_disp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp" />
 
 </RelativeLayout>
