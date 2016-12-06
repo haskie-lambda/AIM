@@ -1,5 +1,8 @@
 package com.protonmail.fabian.schneider.aim;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -14,7 +17,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
-import android.util.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,23 +41,25 @@ public class AIMServiceMain extends Service {
     boolean loaded;
     public static String strengthArr[] = new String[4];
 
-    static {
-        strengthArr[0] = "90,110,90,110";
-        strengthArr[1] = "50,89,111,150";
-        strengthArr[2] = "0,49,151,200";
-        strengthArr[3] = "-50,-1,201,-250";
-    }
-
     static String downURL = "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt";
     static String errPatt = "-1.00e+05";
 
     private float volume;
 
     private int strengthSound[] = new int[5];
-
+    static {
+        strengthArr[0] = "90,110,90,110";
+        strengthArr[1] = "50,89,111,150";
+        strengthArr[2] = "0,49,151,200";
+        strengthArr[3] = "-50,-1,201,-250";
+    }
     //runtime Varialbess
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
+
+
+
+
 
     //Handler for receiving messages from the thread
     private final class ServiceHandler extends Handler{
@@ -139,6 +143,11 @@ public class AIMServiceMain extends Service {
                     return;
                 }
                 //return "ERROR";
+                try{
+                    Thread.sleep(60*1000);
+                } catch (InterruptedException e){
+                    System.out.println("Interrupted Exception thrown while sleep");
+                }
             }
 
 
@@ -147,11 +156,35 @@ public class AIMServiceMain extends Service {
             //stopSelf(msg.arg1); stops the service
         }
     }
+    private void aimNotify() {
+        NotificationManager manager;
+        Notification myNotification;
+        manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Intent intent = new Intent("com.protonmail.fabian.schneider.aim.SERVICE");
+        PendingIntent pendingIntent = PendingIntent.getActivity(AIMServiceMain.this, 1, intent, 0);
+        Notification.Builder builder = new Notification.Builder(AIMServiceMain.this);
+        builder.setAutoCancel(false);
+        builder.setTicker("TICKER");
+        builder.setContentTitle("AIM-Service");
+        builder.setContentText("AIM-Service-Text - Strength");
+        //builder.setSmallIcon(R.drawable.myImageFile);
+        builder.setContentIntent(pendingIntent);
+        builder.setOngoing(true);
+        builder.setNumber(100);
+        builder.build();
 
+        myNotification = builder.getNotification();
+        manager.notify(11, myNotification);
+
+    }
 
     @Override
     public void onCreate(){
         //start Thread running the service... (background task creation)
+
+        //NOTIFICATION_SERVICE
+        this.aimNotify();
+        ///NOTIFICATION
 
         System.out.println("started audio initialization");
         //AUDIO
@@ -226,6 +259,7 @@ public class AIMServiceMain extends Service {
     @Override
     public void onDestroy() {
         Toast.makeText(this, "AIM shutdown", Toast.LENGTH_SHORT).show();
+        super.onDestroy();
     }
 
 
@@ -237,17 +271,18 @@ public class AIMServiceMain extends Service {
 
         if (values[0].equals("Current data is not okay")) {
             //status.setText(values[0]);
+            //play no sound so i know that satellites are down
+
         } else if (values[0].equals("finished loading resources")) {
             //status.setText(values[0]);
+            //play no sound so i know that satellites are down
+
         } else {
-            //audioOut aO = new audioOut();
-            //aO.exec();[
             System.out.println("before BoolCheck: " + loaded);
-            //if(true){ //this.loaded
             System.out.println("before audioOut");
             int tmpStrength = Integer.parseInt(values[0]);
             int streamId = audioOutput(tmpStrength);
-            //}
+            //keep variable for termination
         }
     }
 
@@ -255,40 +290,24 @@ public class AIMServiceMain extends Service {
         System.out.println("audioOut called");
         int actRes;
         //return this.soundPool.play(this.strengthSound[tmpStrength], leftVolumn, rightVolumn, 1, 0, 1f);
-        if(tmpStrength == 0) {
+        if (tmpStrength == 1) {
             actRes = R.raw.strength1s;
-        } else if (tmpStrength == 1) {
-            actRes = R.raw.strength2s;
         } else if(tmpStrength == 2) {
-            actRes = R.raw.strength3s;
+            actRes = R.raw.strength2s;
         } else if(tmpStrength == 3) {
-            actRes = R.raw.strength4s;
+            actRes = R.raw.strength3s;
         } else {
-            actRes = R.raw.strength0s;
+            actRes = R.raw.strength4s;
         }
         System.out.println("actRes: " + actRes);
         MediaPlayer mediaPlayerOut = MediaPlayer.create(this, actRes);
         mediaPlayerOut.start();
-        /*try{
-            Thread.sleep(800);
-        } catch (InterruptedException e) {
-            System.out.println("Interrupted Exception: " + e);
-        }*/
         return 0;
     }
 
     protected void outputText(String result) {
         //output.setText(result);
-    }
-
-    protected void onPostExecute(String result) {
-        // execution of result of Long time consuming operation
-        Log.d("MyApp", "finished");
-        outputText(result);
-    }
-
-    protected void onProgressUpdate(String text) {
-        Log.d("MyApp", "onProgressUpdate called");
+        // if app is active, set outputview to the current strength
     }
 
 
@@ -298,8 +317,7 @@ public class AIMServiceMain extends Service {
         private String lastLine = "";
 
         dataImport(String url) throws MalformedURLException {
-            URL allocUrl = new URL(url);
-            this.url = allocUrl;
+            this.url = new URL (url);
         }
 
         String download() throws IOException {
@@ -339,7 +357,6 @@ public class AIMServiceMain extends Service {
             sDate = this.getDataTime(dataDate);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy MMM dd HHmm");
 
-
             //TODO make date convert right
             try {
                 dateToCheck.setTime(formatter.parse(dataDate));
@@ -354,6 +371,7 @@ public class AIMServiceMain extends Service {
             }
 
             //convert from UT
+
             Calendar currentDate = Calendar.getInstance();
             Calendar currentTime = Calendar.getInstance();
             currentTime.add(Calendar.HOUR, -2);
@@ -364,6 +382,7 @@ public class AIMServiceMain extends Service {
             System.out.println("timeToCheck: " + timeToCheck + "; current Time: " + currentTime);
             System.out.println("timeToCheck Time:" + timeToCheck.HOUR + ":" + timeToCheck.MINUTE);
             System.out.println("time checked: " + currentTime.HOUR + ":" + currentTime.MINUTE);
+
             if(dateToCheck.YEAR == currentDate.YEAR && dateToCheck.MONTH == currentDate.MONTH &&
                     dateToCheck.DAY_OF_MONTH == currentDate.DAY_OF_MONTH &&
                     timeToCheck.HOUR == currentTime.HOUR && timeToCheck.MINUTE == currentTime.MINUTE){      //&& !timeToCheck.before(currentTime.getTime())
