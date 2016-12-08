@@ -183,7 +183,7 @@ public class AIMServiceMain extends Service {
         //start Thread running the service... (background task creation)
 
         //NOTIFICATION_SERVICE
-        this.aimNotify();
+        //this.aimNotify();
         ///NOTIFICATION
 
         System.out.println("started audio initialization");

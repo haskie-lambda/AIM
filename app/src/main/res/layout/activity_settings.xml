@@ -65,7 +65,7 @@
         android:id="@+id/textView16"
         android:textSize="17sp"
         android:textColor="@android:color/black"
-        android:layout_below="@+id/btn_restrictData"
+        android:layout_below="@+id/btn_confData"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -191,16 +191,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <Button
-        android:text="Restrict Data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_restrictData"
-        android:layout_marginTop="36dp"
-        android:layout_below="@+id/textView6"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -211,31 +201,57 @@
         android:minHeight="35dp" />
 
     <Button
-        android:text="+"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_addConfig"
-        android:layout_below="@+id/sb_disDisconnect"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
         android:text="Save Configuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_saveConfig"
-        android:layout_below="@+id/textView15"
+        android:layout_alignBaseline="@+id/btn_delConfig"
+        android:layout_alignBottom="@+id/btn_delConfig"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:minWidth="250dip" />
+
+    <Button
+        android:text="Configure Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_confData"
+        android:minHeight="49dp"
+        android:minWidth="300dp"
+        android:layout_below="@+id/cbox_source"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="+"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_addConfig"
+        android:layout_marginTop="57dp"
+        android:minWidth="40dp"
+        android:layout_below="@+id/sb_disDisconnect"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:text="-"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_delConfig"
+        android:minWidth="40dp"
         android:layout_alignBaseline="@+id/btn_addConfig"
         android:layout_alignBottom="@+id/btn_addConfig"
-        android:layout_toRightOf="@+id/textView15"
-        android:layout_toEndOf="@+id/textView15" />
+        android:layout_toLeftOf="@+id/btn_addConfig"
+        android:layout_toStartOf="@+id/btn_addConfig" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/tbox_newConfigName"
+        android:minWidth="300dp"
+        android:layout_above="@+id/btn_saveConfig"
+        android:layout_alignLeft="@+id/btn_confData"
+        android:layout_alignStart="@+id/btn_confData" />
 
 </RelativeLayout>

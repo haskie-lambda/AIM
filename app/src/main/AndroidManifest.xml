@@ -24,7 +24,16 @@
 
         <service android:name=".AIMServiceMain" />
 
-        <activity android:name=".Settings"></activity>
+        <activity android:name=".Settings" />
+        <activity
+            android:name=".activity_config_satellites"
+            android:label="@string/title_activity_config_satellites"
+            android:parentActivityName=".Settings"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.protonmail.fabian.schneider.aim.Settings" />
+        </activity>
     </application>
 
 </manifest>
