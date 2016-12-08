@@ -17,7 +17,7 @@ import static com.protonmail.fabian.schneider.aim.R.styleable.Spinner;
 /**
  * Created by faebl on 06.12.16.
  */
-
+// TODO: Export module and delete from AIM - solve everything without inputBox!
 public final class inputBox extends Settings {
     private String buttonOk;
     private String buttonCancel;

@@ -74,7 +74,7 @@ public class Settings extends AppCompatActivity {
         // initialize settings view for a configuration object
 
         //Listeners
-
+        //TODO: fix the null-Pointer-Exception-Click Problem
         configSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -137,6 +137,7 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+        //TODO: add the methods and activities for the various options
         btn_configureData.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 String act;
@@ -318,6 +319,5 @@ public class Settings extends AppCompatActivity {
     protected void fillSpinner(Spinner spinner, String[] contents){
         ArrayAdapter<String> adapter = new ArrayAdapter<>(settingsContext, R.layout.support_simple_spinner_dropdown_item, contents);
         spinner.setAdapter(adapter);
-        return;
     }
 }

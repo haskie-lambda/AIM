@@ -8,7 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 public class activity_config_satellites extends AppCompatActivity {
-
+    //TODO: inform about scrolling activities
+    //TODO: add Satellites to the scrolling activity with standard configs
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
