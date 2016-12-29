@@ -10,254 +10,253 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.protonmail.fabian.schneider.aim.Settings">
 
-    <TextView
-        android:text="Data from File"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView10"
-        android:textColor="@android:color/black"
-        android:layout_alignBottom="@+id/sb_dataType"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="17sp" />
-
-    <TextView
-        android:text="Konfiguration:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:textSize="24sp"
-        android:textColor="@android:color/black"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true">
+        <RelativeLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
 
-    <TextView
-        android:text="Real Time Data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView7"
-        android:textColor="@android:color/black"
-        android:layout_alignBottom="@+id/sb_dataType"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:textSize="17sp" />
+            <TextView
+                android:text="Konfiguration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"
+                android:textSize="22sp"
+                android:textColor="@android:color/black"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:text="Repetitions:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView8"
-        android:textSize="14sp"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="12dp"
-        android:layout_marginRight="19dp"
-        android:layout_marginEnd="19dp"
-        android:layout_below="@+id/textView7"
-        android:layout_alignRight="@+id/textView7"
-        android:layout_alignEnd="@+id/textView7" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cbox_config"
+                android:minHeight="35dp"
+                android:layout_below="@+id/textView2"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-    <TextView
-        android:text="Disable while Music/Phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:id="@+id/textView16"
-        android:textSize="17sp"
-        android:textColor="@android:color/black"
-        android:layout_below="@+id/btn_confData"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:text="Real Time Data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView7"
+                android:textColor="@android:color/black"
+                android:layout_alignBottom="@+id/sb_dataType"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textSize="17sp" />
 
-    <SeekBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="20dp"
-        android:layout_alignBottom="@+id/textView17"
-        android:layout_alignRight="@+id/sb_disAudio"
-        android:layout_alignEnd="@+id/sb_disAudio"
-        android:id="@+id/sb_MesFunc"
-        android:max="1"
-        android:progress="0" />
+            <TextView
+                android:text="Source:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView6"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"
+                android:layout_below="@+id/textView7"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="11dp" />
 
-    <SeekBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="20dp"
-        android:layout_alignBottom="@+id/textView15"
-        android:layout_alignRight="@+id/sb_MesFunc"
-        android:layout_alignEnd="@+id/sb_MesFunc"
-        android:id="@+id/sb_disDisconnect"
-        android:max="1"
-        android:progress="0" />
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sb_dataType"
+                android:max="1"
+                android:progress="0"
+                android:minWidth="20dp"
+                android:minHeight="22dp"
+                android:layout_below="@+id/cbox_config"
+                android:layout_centerHorizontal="true" />
 
-    <SeekBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="14dp"
-        android:layout_marginStart="14dp"
-        android:minWidth="20dp"
-        android:id="@+id/sb_disAudio"
-        android:max="1"
-        android:progress="0"
-        android:layout_alignBottom="@+id/textView16"
-        android:layout_toRightOf="@+id/textView16"
-        android:layout_toEndOf="@+id/textView16" />
+            <TextView
+                android:text="Static Data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView10"
+                android:textColor="@android:color/black"
+                android:textSize="17sp"
+                android:layout_alignBottom="@+id/sb_dataType"
+                android:layout_alignRight="@+id/btn_confData"
+                android:layout_alignEnd="@+id/btn_confData" />
 
-    <SeekBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sb_dataType"
-        android:max="1"
-        android:progress="0"
-        android:minWidth="20dp"
-        android:minHeight="22dp"
-        android:layout_below="@+id/cbox_config"
-        android:layout_centerHorizontal="true" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cbox_source"
+                android:layout_below="@+id/textView6"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:minHeight="35dp" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cbox_config"
-        android:minHeight="35dp"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <Button
+                android:text="Configure Data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_confData"
+                android:minHeight="40dp"
+                android:minWidth="300dp"
+                android:layout_below="@+id/cbox_source"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/button_custom_rect"
+                android:gravity="center_horizontal|center_vertical"/>
 
-    <TextView
-        android:text="Read Messages Function"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:id="@+id/textView17"
-        android:textSize="17sp"
-        android:textColor="@android:color/black"
-        android:layout_below="@+id/textView16"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <Button
+                android:text="Configure Categorization"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_confCategorization"
+                android:minHeight="40dp"
+                android:minWidth="300dp"
+                android:background="@drawable/button_custom_rect"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/btn_confData"
+                android:layout_alignLeft="@+id/btn_confData"
+                android:layout_alignStart="@+id/btn_confData" />
 
-    <TextView
-        android:text="Disable on Disconnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView15"
-        android:textSize="17sp"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="17dp"
-        android:layout_below="@+id/textView17"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:text="Disable while Music/Phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView16"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"
+                android:layout_below="@+id/btn_confCategorization"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="28dp" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:id="@+id/cbox_reps"
-        android:minHeight="35dp"
-        android:minWidth="40dp"
-        android:layout_below="@+id/textView10"
-        android:layout_toRightOf="@+id/textView5"
-        android:layout_toEndOf="@+id/textView5" />
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:minWidth="20dp"
+                android:id="@+id/sb_disAudio"
+                android:max="1"
+                android:progress="0"
+                android:layout_alignBottom="@+id/textView16"
+                android:layout_toRightOf="@+id/textView16"
+                android:layout_toEndOf="@+id/textView16" />
 
-    <TextView
-        android:text="Rep. Time:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView5"
-        android:textSize="14sp"
-        android:textColor="@android:color/black"
-        android:layout_below="@+id/cbox_reps"
-        android:layout_alignLeft="@+id/textView8"
-        android:layout_alignStart="@+id/textView8" />
+            <TextView
+                android:text="Read Messages Function"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:id="@+id/textView17"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"
+                android:layout_below="@+id/textView16"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cbox_repTime"
-        android:minHeight="35dp"
-        android:layout_below="@+id/textView8"
-        android:layout_toRightOf="@+id/textView5"
-        android:layout_toEndOf="@+id/textView5" />
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="20dp"
+                android:layout_alignBottom="@+id/textView15"
+                android:layout_alignRight="@+id/sb_MesFunc"
+                android:layout_alignEnd="@+id/sb_MesFunc"
+                android:id="@+id/sb_disDisconnect"
+                android:max="1"
+                android:progress="0" />
 
-    <TextView
-        android:text="Source:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView6"
-        android:textSize="17sp"
-        android:textColor="@android:color/black"
-        android:layout_below="@+id/cbox_repTime"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:text="Disable on Disconnect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView15"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="17dp"
+                android:layout_below="@+id/textView17"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cbox_source"
-        android:layout_below="@+id/textView6"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:minHeight="35dp" />
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="20dp"
+                android:layout_alignBottom="@+id/textView17"
+                android:layout_alignRight="@+id/sb_disAudio"
+                android:layout_alignEnd="@+id/sb_disAudio"
+                android:id="@+id/sb_MesFunc"
+                android:max="1"
+                android:progress="0" />
 
-    <Button
-        android:text="Configure Data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_confData"
-        android:minHeight="49dp"
-        android:minWidth="300dp"
-        android:layout_below="@+id/cbox_source"
-        android:layout_centerHorizontal="true" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/tbox_newConfigName"
-        android:minWidth="300dp"
-        android:layout_above="@+id/btn_saveConfig"
-        android:layout_alignLeft="@+id/btn_confData"
-        android:layout_alignStart="@+id/btn_confData" />
+            <TextView
+                android:text="Name:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lbl_test"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"
+                android:layout_alignBaseline="@+id/tbox_newConfigName"
+                android:layout_alignBottom="@+id/tbox_newConfigName"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-    <Button
-        android:text="+"
-        android:id="@+id/btn_addConfig"
-        android:layout_marginTop="42dp"
-        android:minWidth="40dp"
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/tbox_newConfigName"
+                android:minWidth="235dp"
+                android:layout_marginTop="14dp"
+                android:layout_below="@+id/sb_disDisconnect"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/button_custom"
-        android:gravity = "center_vertical|center_horizontal"
-        android:layout_below="@+id/sb_disDisconnect"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+            <Button
+                android:text="-"
+                android:id="@+id/btn_delConfig"
+                android:minWidth="40dp"
 
-    <Button
-        android:text="Save Configuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_saveConfig"
-        android:minWidth="230dip"
-        android:layout_alignTop="@+id/btn_addConfig"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/button_custom_round"
+                android:gravity = "center_vertical|center_horizontal"
+                android:layout_alignBaseline="@+id/btn_saveConfig"
+                android:layout_alignBottom="@+id/btn_saveConfig"
+                android:layout_toRightOf="@+id/textView16"
+                android:layout_toEndOf="@+id/textView16" />
 
-    <Button
-        android:text="-"
-        android:id="@+id/btn_delConfig"
-        android:minWidth="40dp"
+            <Button
+                android:text="+"
+                android:id="@+id/btn_addConfig"
+                android:minWidth="40dp"
 
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/button_custom"
-        android:gravity = "center_vertical|center_horizontal"
-        android:layout_below="@+id/tbox_newConfigName"
-        android:layout_toRightOf="@+id/btn_saveConfig"
-        android:layout_toEndOf="@+id/btn_saveConfig"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/button_custom_round"
+                android:gravity = "center_vertical|center_horizontal"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/btn_confCategorization"
+                android:layout_alignEnd="@+id/btn_confCategorization"
+                android:layout_marginRight="13dp"
+                android:layout_marginEnd="13dp" />
 
+            <Button
+                android:text="Save Configuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_saveConfig"
+                android:minWidth="190dp"
+                android:minHeight="40dp"
+                android:background="@drawable/button_custom_rect"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_below="@+id/tbox_newConfigName"
+                android:layout_alignRight="@+id/textView17"
+                android:layout_alignEnd="@+id/textView17"
+                android:layout_marginTop="15dp" />
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

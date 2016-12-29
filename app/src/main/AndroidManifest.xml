@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.protonmail.fabian.schneider.aim">
+    package="com.protonmail.fabian.schneider.aim"
+    android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name="com.protonmail.fabian.schneider.aim.constants"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -34,6 +38,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.protonmail.fabian.schneider.aim.Settings" />
         </activity>
+        <activity android:name=".activity_config_sensor" />
+        <activity android:name=".activity_config_cat_sensor" />
+        <activity android:name=".activity_config_onlineFiles"></activity>
     </application>
 
 </manifest>

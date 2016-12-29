@@ -1,7 +1,10 @@
 package com.protonmail.fabian.schneider.aim;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,18 +14,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static android.widget.Toast.makeText;
 
 public class Settings extends AppCompatActivity {
     private Spinner sourceSpinner;
-    private Spinner repSpinner;
-    private Spinner repTimeSpinner;
+    //private Spinner repSpinner;
+    //private Spinner repTimeSpinner;
     private Spinner configSpinner;
     private SeekBar sb_dataType;
     private SeekBar sb_disMedia;
@@ -34,23 +39,25 @@ public class Settings extends AppCompatActivity {
     private EditText userDefinedConfigName;
     private Button btn_configureData;
     private Button btn_removeConfig;
+    private TextView lbl_test;
+    private Button btn_configureCategorization;
 
     private Context settingsContext = this;
-    private String[] arraySpinner;
+    private ArrayList<String> arraySpinner;
 
-    private String newConfigName;
-    private sSetting[] configObjects;
     private sSetting actualConf;
     private String actualConfigName;
+
+    final constants constants = (constants) this.getApplication();
+
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) { // TODO: ADD REQUIRES PREANALYSIS-VIEW; CHANGE DAAI DOKU WHEN DONE!
+        //TODO: add System configuration for DAAI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         // initialize the elements of the activity
         configSpinner = (Spinner) findViewById(R.id.cbox_config);
-        repTimeSpinner = (Spinner) findViewById(R.id.cbox_repTime);
-        repSpinner = (Spinner) findViewById(R.id.cbox_reps);
         sourceSpinner = (Spinner) findViewById(R.id.cbox_source);
         sb_dataType = (SeekBar) findViewById(R.id.sb_dataType);
         sb_disMedia = (SeekBar) findViewById(R.id.sb_disAudio);
@@ -61,48 +68,64 @@ public class Settings extends AppCompatActivity {
         userDefinedConfigName = (EditText) findViewById(R.id.tbox_newConfigName);
         btn_configureData = (Button) findViewById(R.id.btn_confData);
         btn_removeConfig = (Button) findViewById(R.id.btn_delConfig);
+        btn_configureCategorization = (Button) findViewById(R.id.btn_confCategorization);
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-        if(!prefs.getBoolean("installer", false)){
+        lbl_test = (TextView) findViewById(R.id.lbl_test);
+
+        //Styles
+        sb_dataType.getProgressDrawable().setColorFilter(Color.parseColor("#3644D9"), PorterDuff.Mode.SRC_IN);
+        sb_dataType.getThumb().setColorFilter(Color.parseColor("#3644D9"), PorterDuff.Mode.SRC_IN);
+
+        //boot
+        //Initialize a default configuration
+        final SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
+        final SharedPreferences.Editor prefsEditor = prefs.edit();
+        if(!prefs.getBoolean(constants.SET_INSTALLER, false)){
             bootSequence();
-            prefsEditor.putBoolean("installer", true).commit();
-            System.out.println("Boot sequence successful");
+            prefsEditor.putBoolean(constants.SET_INSTALLER, true).apply();
         }
 
         setActualConfig();
         // initialize settings view for a configuration object
 
         //Listeners
-        //TODO: fix the null-Pointer-Exception-Click Problem
+
+        /* TEST LISTENER
+        lbl_test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast toast = makeText(settingsContext, "Test Data: " + actualConf.sourcePath, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+        */
+
+
+
         configSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    String currentSelection = configSpinner.getSelectedItem().toString();
-                    //load the object with name in currentSelection
-                    setNewConfig(currentSelection);
-                } catch (NullPointerException e) {
-                    System.out.println("NPE in config-Spinner selection");
+                if(!configSpinner.getSelectedItem().toString().equals(actualConfigName.replace(constants.CONF_PREFIX,""))) {
+                    try {
+                        prefsEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG, configSpinner.getSelectedItem().toString()).commit();
+                        setActualConfig();
+                    } catch (NullPointerException e) {
+                        System.out.println("NPE in config-Spinner selection");
+                    }
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                return;
+
             }
         });
 
         saveActualConfig.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v){
                     saveActualConfig();
-
-                    Context context = getApplicationContext();
-                    CharSequence text = "Configuration successfully saved";
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = makeText(context, text, duration);
+                    Toast toast = makeText(settingsContext, "Configuration successfully saved", Toast.LENGTH_SHORT);
                     toast.show();
-
                 }
         });
 
@@ -114,7 +137,7 @@ public class Settings extends AppCompatActivity {
                     toast.show();
                     return;
                 }
-                sSetting newConfig = makeNewConfig(name, "sourcePath",1,1);
+                sSetting newConfig = makeNewConfig(name);
                 setNewConfig(newConfig);
                 Toast toast = makeText(settingsContext, "Configuration successfully added", Toast.LENGTH_SHORT);
                 toast.show();
@@ -124,12 +147,22 @@ public class Settings extends AppCompatActivity {
 
         btn_removeConfig.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                String name = actualConfigName.contains(constants.CONF_PREFIX)?actualConfigName:constants.CONF_PREFIX+actualConfigName;
+                SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG,MODE_PRIVATE);
+                SharedPreferences.Editor prefEdit = prefs.edit();
+                prefEdit.remove(name);
+                prefEdit.apply();
+                //deleted config
                 int i;
                 Object temp;
                 for(i = 0; i<configSpinner.getCount()-1; i++){
                     temp = configSpinner.getItemAtPosition(i);
                     try {
-                        System.out.println("Element " + Integer.toString(i) + ": " + temp.toString());
+                        if(!temp.toString().equals(name)){
+                            prefsEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG, temp.toString()).commit();
+                            setActualConfig();
+                            return;
+                        }
                     } catch (NullPointerException e) {
                         System.out.println("Eement " + Integer.toString(i) + ": NULL");
                     }
@@ -137,60 +170,112 @@ public class Settings extends AppCompatActivity {
             }
         });
 
-        //TODO: add the methods and activities for the various options
         btn_configureData.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 String act;
+                Intent intent;
                 switch(sourceSpinner.getSelectedItem().toString()){
-                    case "Satellite":
-                        act = "Satellite";
+                    case "Satellite":   //TODO: use constant
+                        act = constants.ST_SATELLITES;
+                        intent = new Intent(settingsContext, activity_config_satellites.class);
                         break;
                     case "Online-Source":
-                        act = "Online-Source";
+                        act = constants.ST_ONLINE_SOURCE;
+                        intent = new Intent(settingsContext, activity_config_onlineFiles.class);
+                        intent.putExtra(constants.INTENT_EXTRA_DATA_RESTRICTION, actualConf.restFrom + "," + actualConf.restTo);
                         break;
                     case "Sensor-Data":
-                        act = "Sensor-Data";
+                        act = constants.ST_SENSOR_DATA;
+                        startSensorConfig(findViewById(android.R.id.content));
+                        intent = new Intent(settingsContext, activity_config_sensor.class);
                         break;
                     case "File-Source":
-                        act = "File-Source";
+                        act = constants.ST_FILE_SOURCE;
+                        intent = new Intent(settingsContext, activity_config_onlineFiles.class); //TODO: change eventually
                         break;
-                    case "Bluetooth-Source":
+                    /*case "Bluetooth-Source":
                         act = "Bluetooth-Source";
+                        intent = new Intent(settingsContext, activity_config_sensor.class);
                         break;
                     case "Position":
                         act = "Position";
+                        intent = new Intent(settingsContext, activity_config_sensor.class);
                         break;
+                        */
                     default:
-                        act = "ERROR";
+                        act = constants.ST_ERROR;
+                        return;
                 }
+                startConfig(intent);
                 Toast toast = makeText(settingsContext,"Configuration for " + act + " started", Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
 
 
+        btn_configureCategorization.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startCatConfig();
+            }
+        });
+
     }
 
+    public void startConfig(Intent intent){
+        intent.putExtra(constants.INTENT_EXTRA_ACTUAL_SOURCE_PATH, actualConf.sourceConfig.sourceType);
+        startActivityForResult(intent, 0);
+    }
+
+    public void startSensorConfig(View view){
+        Intent intent = new Intent(this, activity_config_sensor.class);
+        intent.putExtra(constants.INTENT_EXTRA_ACTUAL_SOURCE_PATH, actualConf.sourceConfig.sourceType);
+        startActivityForResult(intent, 0);
+    }
+
+
+    public void startCatConfig(){
+        Intent intent;
+        intent = new Intent(this,activity_config_cat_sensor.class);
+        intent.putExtra(constants.INTENT_EXTRA_ACTUAL_SENSOR, actualConf.sourceConfig.source);
+        intent.putExtra(constants.INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY, actualConf.strengthArray);
+        startActivityForResult(intent, 1);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (getIntent().getStringExtra(constants.INTENT_EXTRA_RETURN)){
+           /* case(constants.INTENT_EXTRA_RETURN_ONLINEFILE): TODO: constants??
+                break;*/
+        }
+
+
+        if(requestCode == 0){
+            if(resultCode == RESULT_OK){
+                actualConf.sourceConfig.source = data.getStringExtra(constants.INTENT_EXTRA_ACTUAL_SENSOR);
+            }
+        } else if(requestCode == 1){
+            if(resultCode == RESULT_OK){ //TODO: anpassen: codes stehen für den configurationstyp; switch for codes
+                actualConf.strengthArray = getIntent().getStringArrayExtra(constants.INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY);
+            }
+        }//TODO: satellite return must be set!
+
+    }
 
     public void bootSequence(){
         sSetting boot;
-        boot = new sSetting("Default",false,0,0,"Satellite","http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt",1,1,true,false,true);
+        boot = new sSetting("Default");
         setNewConfig(boot);
     }
 
-    public sSetting makeNewConfig(String name, String sourcePath, int dataFrom, int dataTo){
+    public sSetting makeNewConfig(String name){
         sSetting newConfig;
-        newConfig = new sSetting("config_" + name,
-                                sb_dataType.getProgress()>0,
-                                Integer.parseInt(repSpinner.getSelectedItem().toString()),
-                                Integer.parseInt(repTimeSpinner.getSelectedItem().toString()),
-                                sourceSpinner.getSelectedItem().toString(),
-                                sourcePath,
-                                dataFrom,
-                                dataTo,
-                                sb_disMedia.getProgress()>0,
-                                sb_MessFunc.getProgress()>0,
-                                sb_disconnect.getProgress()>0);
+        newConfig = new sSetting(constants.CONF_PREFIX + name);
+        newConfig.type = sb_dataType.getProgress()>0;
+        newConfig.sourceConfig.sourceType = sourceSpinner.getSelectedItem().toString();
+        newConfig.disableOnMedia = sb_disMedia.getProgress()>0;
+        newConfig.readMessages = sb_disMedia.getProgress()>0;
+        newConfig.disableOnDisconnect = sb_disconnect.getProgress()>0;
         return newConfig;
     }
 
@@ -201,56 +286,53 @@ public class Settings extends AppCompatActivity {
         actualConf.disableOnMedia = (sb_disMedia.getProgress()>0);
         actualConf.readMessages = (sb_MessFunc.getProgress()>0);
         actualConf.disableOnDisconnect = (sb_disconnect.getProgress()>0);
-
-        actualConf.reps = Integer.parseInt(repSpinner.getSelectedItem().toString());
-        actualConf.repTime = Integer.parseInt(repTimeSpinner.getSelectedItem().toString());
-        actualConf.source = sourceSpinner.getSelectedItem().toString();
+        actualConf.sourceConfig.sourceType = sourceSpinner.getSelectedItem().toString();
         actualConf.name = userDefinedConfigName.getText().toString();
         actualConfigName = actualConf.name;
-        System.out.println("new userdefinedName: " + actualConf.name);
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+
+        SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
         SharedPreferences.Editor prefEditor = prefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(actualConf);
-        prefEditor.putString("config_"+ actualConf.name, json).commit();
-        prefEditor.putString("actualConfig", actualConf.name).commit();
+        prefEditor.putString(constants.CONF_PREFIX + actualConf.name, json).commit();
+        prefEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG, actualConf.name).commit();
         setActualConfig();
     }
 
 
     public void setNewConfig(sSetting config){
-        if(!config.name.contains("config_")){
-            config.name = "config_" + config.name;
+        if(!config.name.contains(constants.CONF_PREFIX)){
+            config.name = constants.CONF_PREFIX + config.name;
         }
-        SharedPreferences pref = getPreferences(MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
         SharedPreferences.Editor prefEditor = pref.edit();
         Gson gson = new Gson();
         String json = gson.toJson(config);
-        prefEditor.putString(config.name, json).commit(); //give at least one object
-        prefEditor.putString("actualConfig",config.name).commit(); //set the name of the actual object
+        prefEditor.putString(config.name, json).commit();
+        prefEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG,config.name).commit();
         actualConfigName = config.name;
         setActualConfig();
     }
     protected void setActualConfig(){
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        actualConfigName = prefs.getString("actualConfig","");
+        SharedPreferences prefs = getSharedPreferences("configuration", MODE_PRIVATE);
+        actualConfigName = prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG,"");
         System.out.println("new actualConfigName: " + actualConfigName);
-        setNewConfig(actualConfigName);
+        setNewConfig(actualConfigName);     //METHOD BENEATH NOT ABOVE!!
         initConfig();
     }
 
     protected void setNewConfig(String configName){
-        if(!configName.contains("config_")){
-            configName = "config_" + configName;
+        if(!configName.contains(constants.CONF_PREFIX)){
+            configName = constants.CONF_PREFIX + configName;
         }
         System.out.println("edited new actualConfigName: " + configName);
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
         SharedPreferences.Editor prefEditor = prefs.edit();
         Gson gson = new Gson();
         String json;
         json = prefs.getString(configName, "");
         actualConf = gson.fromJson(json, sSetting.class);
-        prefEditor.putString("actualConfig", configName).commit();
+        prefEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG, configName).commit();
     }
 
 
@@ -262,61 +344,58 @@ public class Settings extends AppCompatActivity {
         sb_disconnect.setProgress(actualConf.disableOnDisconnect ? 1:0);
         sb_MessFunc.setProgress(actualConf.readMessages ? 1:0);
 
-        userDefinedConfigName.setText(actualConf.name.replace("config_",""));
-
+        userDefinedConfigName.setText(actualConf.name.replace(constants.CONF_PREFIX,""));
+        AIM_start.lbl_actualConf.setText(actualConf.name.replace(constants.CONF_PREFIX,""));
         initSpinners();
-        //cboxes
-        selectSpinnerValue(configSpinner, actualConfigName.replace("config_",""));
-        selectSpinnerValue(repSpinner, String.valueOf(actualConf.reps));
-        selectSpinnerValue(repTimeSpinner, String.valueOf(actualConf.repTime));
 
+        selectSpinnerValue(configSpinner, actualConfigName.replace(constants.CONF_PREFIX,""));
+        selectSpinnerValue(sourceSpinner, actualConf.sourceConfig.sourceType);
     }
 
-            private void selectSpinnerValue(Spinner spinner, String value){
-                int i = 0;
-                for(i = 0; i<spinner.getCount(); i++){
-                    if(spinner.getItemAtPosition(i).toString().equals(value)){
-                        spinner.setSelection(i);
-                        return;
-                    }
-                }
+    private void selectSpinnerValue(Spinner spinner, String value){
+        int i;
+        for(i = 0; i<spinner.getCount(); i++){
+            if(spinner.getItemAtPosition(i).toString().equals(value)){
+                spinner.setSelection(i);
+                return;
             }
+        }
+    }
 
 
     protected void initSpinners(){
-        arraySpinner = new String[1];
-        SharedPreferences pref = getPreferences(MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
         Map<String, ?> allEntries = pref.getAll();
+        arraySpinner = new ArrayList <String>();
         int i = 0;
         for(Map.Entry<String, ?> entry : allEntries.entrySet()){
             System.out.println("searching Keys: " + entry.getKey());
-            if(entry.getKey().contains("config_")){
-                arraySpinner[i] = entry.getKey().replace("config_", "");
-                arraySpinner = java.util.Arrays.copyOf(arraySpinner, arraySpinner.length +1);
+            if(entry.getKey().toString().contains(constants.CONF_PREFIX)){
+                System.out.println(entry.getKey().toString());
+                arraySpinner.add(i, entry.getKey().toString().replace(constants.CONF_PREFIX,""));
                 i++;
             }
         }
 
-        System.out.println("arraySpinner: " + arraySpinner[0] + " " + arraySpinner[1]);
-        //fillSpinner(configSpinner, arraySpinner);
         fillSpinner(configSpinner, arraySpinner);
 
-        this.arraySpinner = new String[10];
-        for (i=0;i<=9;i++){
-            arraySpinner[i] = String.valueOf(i);
+        arraySpinner = new ArrayList<String>();
+
+        if(actualConf.getTypeName().equals(constants.ST_CONF_TYPE_RT_DATA)){
+            this.arraySpinner.add(constants.ST_SATELLITES);
+            this.arraySpinner.add(constants.ST_ONLINE_SOURCE);
+            this.arraySpinner.add(constants.ST_SENSOR_DATA);
+            this.arraySpinner.add(constants.ST_FILE_SOURCE);
+            //this.arraySpinner.add("Bluetooth-Source");
+            //this.arraySpinner.add("Position");
+        } else{
+            this.arraySpinner.add(constants.ST_FILE_SOURCE);
+            this.arraySpinner.add(constants.ST_JUST_MESSAGES);
         }
-        fillSpinner(repTimeSpinner,arraySpinner);
-        fillSpinner(repSpinner,arraySpinner);
-
-        //TODO: check the live-Data/file Data (settings object) for right initialization
-
-        this.arraySpinner = new String[]{
-                "Satellite","Online-Source", "Sensor-Data", "File-Source", "Bluetooth-Source", "Position"
-        };
         fillSpinner(sourceSpinner, arraySpinner);
     }
 
-    protected void fillSpinner(Spinner spinner, String[] contents){
+    protected void fillSpinner(Spinner spinner, ArrayList <String> contents){
         ArrayAdapter<String> adapter = new ArrayAdapter<>(settingsContext, R.layout.support_simple_spinner_dropdown_item, contents);
         spinner.setAdapter(adapter);
     }

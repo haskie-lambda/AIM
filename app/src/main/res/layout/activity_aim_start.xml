@@ -30,7 +30,9 @@
         android:layout_y="122dp"
         android:width="200dp"
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button_custom_rect"
+        android:gravity="center_horizontal|center_vertical"/>
 
     <Button
         android:text="Stop AIM"
@@ -43,7 +45,9 @@
         android:width="200dp"
         android:layout_below="@+id/start_AIM"
         android:layout_alignLeft="@+id/start_AIM"
-        android:layout_alignStart="@+id/start_AIM" />
+        android:layout_alignStart="@+id/start_AIM"
+        android:background="@drawable/button_custom_rect"
+        android:gravity="center_horizontal|center_vertical"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -70,6 +74,19 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:text="..."
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/settings"
+        android:onClick="sendMessage"
+        android:background="@drawable/button_custom_round"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignBaseline="@+id/statusView"
+        android:layout_alignBottom="@+id/statusView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -78,23 +95,20 @@
         android:textSize="24dp"
         android:textAlignment="center"
         android:id="@+id/textView"
-        android:layout_marginTop="70dp"
-        android:layout_below="@+id/my_toolbar"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignBottom="@+id/my_toolbar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <Button
+    <TextView
         android:text="..."
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/settings"
-        android:onClick="sendMessage"
-        android:background="@drawable/button_custom"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_alignBaseline="@+id/statusView"
-        android:layout_alignBottom="@+id/statusView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/stop_AIM"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="79dp"
+        android:id="@+id/lbl_actualConfig"
+        android:textSize="18sp"
+        android:textColor="@android:color/black" />
 
 
 </RelativeLayout>

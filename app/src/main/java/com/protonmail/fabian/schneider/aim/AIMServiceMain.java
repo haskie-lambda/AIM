@@ -4,12 +4,19 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 import android.os.Process;
 import android.media.AudioAttributes;
@@ -17,6 +24,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
+
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,32 +43,28 @@ import java.util.Calendar;
  */
 
 public class AIMServiceMain extends Service {
+    NotificationManager manager;
+    Notification myNotification;
 
+
+    //Setting specific stuff
+    public sSetting configuration;
+    final constants constants = (constants) getApplicationContext();
+
+    ///Setting specific stuff
+
+    private boolean silence = false;
     private SoundPool soundPool;
     private AudioManager audioManager;
     private static final int max_streams = 1;
     private static final int streamType = AudioManager.STREAM_MUSIC;
     boolean loaded;
-    public static String strengthArr[] = new String[4];
-
-    static String downURL = "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt";
-    static String errPatt = "-1.00e+05";
-
     private float volume;
 
-    private int strengthSound[] = new int[5];
-    static {
-        strengthArr[0] = "90,110,90,110";
-        strengthArr[1] = "50,89,111,150";
-        strengthArr[2] = "0,49,151,200";
-        strengthArr[3] = "-50,-1,201,-250";
-    }
     //runtime Varialbess
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
-
-
-
+    private int strengthSound[] = new int[5];
 
 
     //Handler for receiving messages from the thread
@@ -67,49 +73,111 @@ public class AIMServiceMain extends Service {
             super(looper);
         }
 
+
         @Override
         public void handleMessage(Message msg){
+            //System.out.println("config_check in Message-Handler: " + Boolean.toString(configuration.reps==-1)); TODO: NPE with configuration.reps why??
+            PhoneStateListener phoneStateListener= new PhoneStateListener(){
+                @Override
+                public void onCallStateChanged(int state, String incomingNumber){
+                    if(state==TelephonyManager.CALL_STATE_RINGING){
+                        //incoming call - stop service
+                        silence = true;
+                    } else if(state == TelephonyManager.CALL_STATE_IDLE){
+                        //not in call - resume service
+                        silence = false;
+                    } else if(state == TelephonyManager.CALL_STATE_OFFHOOK){
+                        //call dialing
+                        silence = true;
+                    }
+                    super.onCallStateChanged(state, incomingNumber);
+                }
+            };
+            TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            if(mgr != null) {
+                mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+            }
+
             //work here
+            SharedPreferences prefs = getSharedPreferences("configuration",MODE_PRIVATE);
+            System.out.println("actual configuration.reps:" + configuration.reps);
+            if(configuration.reps==-1){
+                while(prefs.getString("serviceStatus","stop").equals("run")) {
+                    descTree();
+                    System.out.println("While-loop");
+                }
+            } else {
+                Integer i;
+                for(i=0;i<=configuration.reps;i++){
 
+                    descTree();
+                }
+            }
+            stopSelf(msg.arg1);
+            if (mgr != null){
 
-            while (true) {
+            }
+        }
+    }
 
-                System.out.println("before publishProgress Update");
-                //publishProgress("Calculation Started");
+    private void descTree(){
+        //System.out.println("before publishProgress Update");
+        //publishProgress("Calculation Started");
 
-                AIMServiceMain.dataImport dI;
-                try {
-                    dI = new AIMServiceMain.dataImport(downURL);
-                    String calcData;
-                    calcData = dI.download();
+        AIMServiceMain.dataImport dI;
+        try {
+            //get Data
+            if(configuration.getTypeName().equals(constants.ST_CONF_TYPE_RT_DATA)){        //datatype == liveDataSource
+                if(configuration.sourceConfig.parentSourceType.equals(constants.PST_ONLINE)){
+                    dI = new AIMServiceMain.dataImport(configuration.sourceConfig.source);
+                    String calcData = dI.download();
 
-                    System.out.println(calcData);
                     AIMServiceMain.preAnalysis pA;
-                    pA = new AIMServiceMain.preAnalysis(calcData);
-                    boolean dateOk;
-                    dateOk = pA.preanalyse();
-                    if (dateOk) {
-                        System.out.println("Data Date is okay");
-                        //call last line downloader
-                        dI = new AIMServiceMain.dataImport(downURL);
-                        String lastLine;
-                        lastLine = dI.downloadLast();
-                        if (!lastLine.contains(errPatt)) {
-                            //data is ok
-                            System.out.println("Current data is okay");
-                            System.out.println("Current data: " + lastLine);
-                            System.out.println("Starting analysis");
 
-                            AIMServiceMain.analyse an = new AIMServiceMain.analyse(lastLine);
-                            int strength;
-                            strength = an.analyseData();
-                            if (strength != -1) {
+                    long dateTimeRange;
+                    if(configuration.validDateRange!=-1){                                                   //convert from date range like last 5 mins to a specific timestamp
+                        dateTimeRange = System.currentTimeMillis() / 1000L - configuration.validDateRange;
+                    } else {
+                        dateTimeRange = configuration.validDateTimeFrom;
+                    }
+                    pA = new AIMServiceMain.preAnalysis(calcData, dateTimeRange, configuration.dateLocInFile, configuration.timeLocInFile);
+
+
+                    boolean dateOk = true;
+                    if(configuration.validRequired){
+                        dateOk = pA.preanalyse();
+                    }
+
+                    System.out.println("dateOK: " + dateOk);
+                    if(dateOk){
+                        String lineToAnalyse;
+                        if(configuration.specialLine.equals(constants.DATA_ANALYSIS_SPECIALLINE_LAST_LINE)){
+                            lineToAnalyse = dI.downloadLast();
+                        } else if(configuration.specialLine.equals(constants.DATA_ANALYSIS_SPECIALLINE_FIRST_LINE)){
+                            lineToAnalyse = dI.downloadLast();
+                        } else if(configuration.specialLine.equals(constants.DATA_ANALYSIS_SPECIALLINE_NO)){
+                            lineToAnalyse = dI.download(configuration.lineOfFile);
+                        } else {
+                            lineToAnalyse = configuration.sourceConfig.errorPattern; //Error handling for broken object
+                        }
+
+                        System.out.println("lineToAnalyse: " + lineToAnalyse);
+                        if(!lineToAnalyse.contains(configuration.sourceConfig.errorPattern)){
+                            //TODO: get algorithm set and decide weather default or other...
+
+                                //DEFAULT
+                                int[] temp = new int[2];
+                                temp[0] = configuration.restFrom;
+                                temp[1] = configuration.restTo;
+
+                                AIMServiceMain.analyse an = new AIMServiceMain.analyse(lineToAnalyse, temp);
+                                int strength;
+                                strength = an.analyseData();
+                                ///DEFAULT
+
+                            if (strength != -1) {                   // TODO: DAIIM ???
                                 System.out.println("Strength: " + strength);
-                                //outputText(Integer.toString(strength));
                                 publishProgress(Integer.toString(strength));
-                                //return Integer.toString(strength);
-
-
                             } else {
                                 System.out.println("Strength not found");
                                 //send signal for out of scope to output
@@ -123,7 +191,6 @@ public class AIMServiceMain extends Service {
                             publishProgress("-1");
                             //return "-1";
                         }
-
                     } else {
                         System.out.println("Data Date not okay");
                         publishProgress("Data Date not okay");
@@ -131,34 +198,55 @@ public class AIMServiceMain extends Service {
                         publishProgress("-1");
                         //return "-1";
                     }
-
-
-                    //catch statements
-                } catch (MalformedURLException e) {
-                    System.out.println("MalformedUrlException for dI allocation");
-                } catch (IOException e) {
-                    System.out.println("IOException in dI alloc");
-
-                    //check inet conn/send satellite down to output
-                    return;
+                } else if(configuration.sourceConfig.parentSourceType.equals("offlineFile")){
+                    System.out.println("            ParentSourceType == offlineFile");
+                } else {//...
+                    System.out.println("            ParentSourceType == unknown");
                 }
-                //return "ERROR";
-                try{
-                    Thread.sleep(60*1000);
-                } catch (InterruptedException e){
-                    System.out.println("Interrupted Exception thrown while sleep");
-                }
+
+
+            } else {                        //data Type == fileDataSource
+
+                System.out.println("dataType == fileDataSource");
+
             }
 
 
+            //catch statements
+        } catch (MalformedURLException e) {
+            System.out.println("MalformedUrlException for dI allocation");
+        } catch (IOException e) {
+            System.out.println("IOException in dI alloc");
+
+            boolean nA = networkAvaiable();
+            if (!nA){
+                //stop service publish no conn
+                if(configuration.disableOnDisconnect) {
+                    SharedPreferences prefs = getSharedPreferences("configuration", MODE_PRIVATE);
+                    SharedPreferences.Editor prefsEditor = prefs.edit();
+                    prefsEditor.putString("serviceStatus", "stop").commit();
+                }
 
 
-            //stopSelf(msg.arg1); stops the service
+            }
+            return;
+        }
+        //return "ERROR";
+        try{
+            Thread.sleep(configuration.repTime);
+        } catch (InterruptedException e){
+            System.out.println("Interrupted Exception thrown while sleep");
         }
     }
-    private void aimNotify() {
-        NotificationManager manager;
-        Notification myNotification;
+
+    private boolean networkAvaiable(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    };
+
+    private void aimNotify() {              //TODO notification service causing crash...
+
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent intent = new Intent("com.protonmail.fabian.schneider.aim.SERVICE");
         PendingIntent pendingIntent = PendingIntent.getActivity(AIMServiceMain.this, 1, intent, 0);
@@ -167,7 +255,7 @@ public class AIMServiceMain extends Service {
         builder.setTicker("TICKER");
         builder.setContentTitle("AIM-Service");
         builder.setContentText("AIM-Service-Text - Strength");
-        //builder.setSmallIcon(R.drawable.myImageFile);
+        builder.setSmallIcon(R.drawable.rect);
         builder.setContentIntent(pendingIntent);
         builder.setOngoing(true);
         builder.setNumber(100);
@@ -183,7 +271,7 @@ public class AIMServiceMain extends Service {
         //start Thread running the service... (background task creation)
 
         //NOTIFICATION_SERVICE
-        //this.aimNotify();
+        this.aimNotify();
         ///NOTIFICATION
 
         System.out.println("started audio initialization");
@@ -194,6 +282,8 @@ public class AIMServiceMain extends Service {
         this.volume = currentVolumeIndex/maxVolumeIndex;
         //this.setVolumeControlStream(streamType);
 
+
+        setConfiguration();
 
         if(Build.VERSION.SDK_INT >= 21) {
             AudioAttributes audioAttrib = new AudioAttributes.Builder()
@@ -237,12 +327,26 @@ public class AIMServiceMain extends Service {
         mServiceHandler = new ServiceHandler(mServiceLooper);
     }
 
+
+    protected void setConfiguration(){
+        SharedPreferences prefs = getSharedPreferences("configuration", MODE_PRIVATE);
+        String configName = prefs.getString("actualConfig", "");
+        if(!configName.contains("config_")){
+            configName = "config_" + configName;
+        }
+        Gson gson = new Gson();
+        String json;
+        json = prefs.getString(configName, "");
+        configuration = gson.fromJson(json, sSetting.class);
+        System.out.println("config_check: " + configuration.sourceConfig.source);
+    }
+
+
+
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
+    public int onStartCommand(Intent intent, int flags, int startId){   //Service Startup
         Toast.makeText(this, "AIM starting", Toast.LENGTH_SHORT).show();
 
-        //for each start request send message to start a job and deliver the
-        // start ID so we know whitch request we're stopping when we finish the job
         Message msg = mServiceHandler.obtainMessage();
         msg.arg1 = startId;
         mServiceHandler.sendMessage(msg);
@@ -252,7 +356,6 @@ public class AIMServiceMain extends Service {
 
     @Override
     public IBinder onBind(Intent intent){
-        //no binding so null
         return null;
     }
 
@@ -266,9 +369,7 @@ public class AIMServiceMain extends Service {
 
 
     //AIM Methods
-    protected void publishProgress(String... values) {
-        //output.setText(values[0]);
-
+    protected void publishProgress(String... values) {      //TODO: set text on activity with intents
         if (values[0].equals("Current data is not okay")) {
             //status.setText(values[0]);
             //play no sound so i know that satellites are down
@@ -280,10 +381,15 @@ public class AIMServiceMain extends Service {
         } else {
             System.out.println("before BoolCheck: " + loaded);
             System.out.println("before audioOut");
+
             int tmpStrength = Integer.parseInt(values[0]);
             int streamId = audioOutput(tmpStrength);
             //keep variable for termination
         }
+    }
+
+    protected void updateMainUI(){
+
     }
 
     protected int audioOutput(int tmpStrength) {
@@ -299,22 +405,30 @@ public class AIMServiceMain extends Service {
         } else {
             actRes = R.raw.strength4s;
         }
+        // UPDATE UI
+        Intent intent = new Intent("STRENGTH");
+        intent.putExtra("STRENGTH", (double) tmpStrength);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        ///UPDATE UI
+
         System.out.println("actRes: " + actRes);
         MediaPlayer mediaPlayerOut = MediaPlayer.create(this, actRes);
-        mediaPlayerOut.start();
+        if(!silence){mediaPlayerOut.start();}
         return 0;
     }
 
-    protected void outputText(String result) {
-        //output.setText(result);
-        // if app is active, set outputview to the current strength
-    }
 
+
+
+    //------------------------------DATA IMPORT ------------------------------------------
 
     final class dataImport {
         private String downData = "";
         private URL url = null;
         private String lastLine = "";
+        private String firstLine = "";
+        private String numberLine = "";
+        private int lineNumber;
 
         dataImport(String url) throws MalformedURLException {
             this.url = new URL (url);
@@ -327,19 +441,44 @@ public class AIMServiceMain extends Service {
             BufferedReader br = new BufferedReader(new InputStreamReader(ins));
 
             String line;
-
+            int i = 0;
             while ((line = br.readLine()) != null) {
+                if(i==0){
+                    firstLine = line;
+                }
+                if(i==lineNumber){
+                    numberLine = line;
+                }
                 downData += line;
                 lastLine = line;
             }
             return downData;
         }
 
+        String download(int lineNumber) throws IOException{
+            this.lineNumber = lineNumber;
+            this.download();
+            return numberLine;
+        }
+
         String downloadLast() throws IOException {
             this.download();
             return lastLine;
         }
+
+        String downloadFirst() throws IOException {
+            this.download();
+            return firstLine;
+        }
+
     }
+
+
+
+
+
+
+    //-----------------------------------------PREANALYSIS------------------------------------
 
     class preAnalysis{
         private String data;
@@ -347,9 +486,16 @@ public class AIMServiceMain extends Service {
         private String sDate;
         private Calendar dateToCheck = Calendar.getInstance();
         private Calendar timeToCheck = Calendar.getInstance();
+        private Long dateTimeFrom = System.currentTimeMillis() / 1000L - 5*60;
 
-        preAnalysis(String data){
+        private int[] dateLocInFile;
+        private int[] timeLocInFile;
+
+        preAnalysis(String data, Long dateTimeFrom, int[] dateLocInFile, int[] timeLocInFile){
             this.data = data;
+            this.dateTimeFrom = dateTimeFrom;
+            this.dateLocInFile = dateLocInFile;
+            this.timeLocInFile = timeLocInFile;
         }
 
         boolean preanalyse(){
@@ -383,6 +529,7 @@ public class AIMServiceMain extends Service {
             System.out.println("timeToCheck Time:" + timeToCheck.HOUR + ":" + timeToCheck.MINUTE);
             System.out.println("time checked: " + currentTime.HOUR + ":" + currentTime.MINUTE);
 
+            //TODO: WHY is the check ALWAYS true??
             if(dateToCheck.YEAR == currentDate.YEAR && dateToCheck.MONTH == currentDate.MONTH &&
                     dateToCheck.DAY_OF_MONTH == currentDate.DAY_OF_MONTH &&
                     timeToCheck.HOUR == currentTime.HOUR && timeToCheck.MINUTE == currentTime.MINUTE){      //&& !timeToCheck.before(currentTime.getTime())
@@ -392,44 +539,53 @@ public class AIMServiceMain extends Service {
             }
         }
         private String getDataDate(final String data){
-            return data.substring(35,51);
+            return data.substring(dateLocInFile[0],dateLocInFile[1]);
         }
 
         private String getDataTime(final String dataDate){
-            return dataDate.substring(12);
+            return dataDate.substring(timeLocInFile[0], timeLocInFile[1]);
         }
     }
 
 
+
+
+
+
+
+    //---------------------------------------------------ANALYSE---------------------------------------------
+
+
     final class analyse{
         private String data;
+        private int[] dataFromTo;
         private String[] splittedData = new String[4];
         private Double[] splittedStrength = new Double[4];
-        analyse(String data){
+        analyse(String data, int[] dataFromTo){
             this.data = data;
+            this.dataFromTo = dataFromTo;
         }
 
         int analyseData(){
+            System.out.println("in c.Analyse>analyseData>v.data 01: " + data);
             data = this.getCalcData();
-            this.splitCalcData();
-            String temp = splittedData[3];
+            //this.splitCalcData();
+            System.out.println("in c.Analyse>analyseData>v.data: " + data);
+            String temp = data; //splittedData[3];
             double tempSplit = Double.parseDouble(temp);
             int counter = 0;
-            for (String i : strengthArr){
-                this.splitStrength(i);
-                if ((tempSplit >= splittedStrength[0] &&
-                        tempSplit <= splittedStrength[1]) ||
-                        (tempSplit >= splittedStrength[2] &&
-                                tempSplit <= splittedStrength[3])){
-                    return counter;
+            int[] checkLine;
+            for (int i=0;i<=configuration.strengthArray.length;i++){
+                checkLine = configuration.splitStrenthArray(i);
+                if(tempSplit>=checkLine[0] && tempSplit<=checkLine[1]){
+                    return checkLine[2];
                 }
-                counter += 1;
+                counter++;
             }
-
             return -1;
         }
 
-        private void splitStrength(String strength){
+        private void splitDoubleStrengthArray(String strength){
             String[] temp;
             temp = strength.split(",");
             for(int b = 0; b < temp.length; b++){
@@ -439,7 +595,7 @@ public class AIMServiceMain extends Service {
 
 
         private String getCalcData(){
-            return data.substring(37);
+            return data.substring(dataFromTo[0],dataFromTo[1]);
         }
 
         private void splitCalcData(){
