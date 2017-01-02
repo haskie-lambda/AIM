@@ -10,7 +10,6 @@ package com.protonmail.fabian.schneider.aim;
 import java.io.Serializable;
 
 public class sSetting implements Serializable {
-    private constants constants = new constants(); //tODO: application context??
     public String name;
     public boolean type = false;
 
@@ -21,7 +20,7 @@ public class sSetting implements Serializable {
     public static sSettingsSource sourceConfig;
 
     static {
-        sourceConfig = new sSettingsSource("online","Satellite-Data","http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt","-1.00e+05"); // TODO: use constants!!
+        sourceConfig = new sSettingsSource(constants.PST_ONLINE, constants.ST_SATELLITES,"http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt","-1.00e+05");
     }
     //public String source = "Satellite";
     //public String sourcePath = "http://services.swpc.noaa.gov/text/goes-magnetometer-primary.txt";
@@ -49,7 +48,7 @@ public class sSetting implements Serializable {
         timeLocInFile[1] = 16;
     }
 
-    public static String[] strengthArray; //TODO: make generic?
+    public static String[] strengthArray;
     static{
         strengthArray = new String[7];
         strengthArray[0] = "90,110,0";

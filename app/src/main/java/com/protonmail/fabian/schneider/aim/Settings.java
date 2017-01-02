@@ -33,14 +33,8 @@ public class Settings extends AppCompatActivity {
     private SeekBar sb_disMedia;
     private SeekBar sb_MessFunc;
     private SeekBar sb_disconnect;
-    private Button saveActualConfig;
-    private Button addNewConfig;
-    private Button removeActualConfig;
     private EditText userDefinedConfigName;
-    private Button btn_configureData;
-    private Button btn_removeConfig;
-    private TextView lbl_test;
-    private Button btn_configureCategorization;
+
 
     private Context settingsContext = this;
     private ArrayList<String> arraySpinner;
@@ -48,13 +42,19 @@ public class Settings extends AppCompatActivity {
     private sSetting actualConf;
     private String actualConfigName;
 
-    final constants constants = (constants) this.getApplication();
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) { // TODO: ADD REQUIRES PREANALYSIS-VIEW; CHANGE DAAI DOKU WHEN DONE!
         //TODO: add System configuration for DAAI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        //local variables
+        Button btn_configureData;
+        Button btn_removeConfig;
+        TextView lbl_test;
+        Button btn_configureCategorization;
+        Button saveActualConfig;
+        Button addNewConfig;
 
         // initialize the elements of the activity
         configSpinner = (Spinner) findViewById(R.id.cbox_config);
@@ -175,21 +175,21 @@ public class Settings extends AppCompatActivity {
                 String act;
                 Intent intent;
                 switch(sourceSpinner.getSelectedItem().toString()){
-                    case "Satellite":   //TODO: use constant
+                    case constants.ST_SATELLITES:
                         act = constants.ST_SATELLITES;
                         intent = new Intent(settingsContext, activity_config_satellites.class);
                         break;
-                    case "Online-Source":
+                    case constants.ST_ONLINE_SOURCE:
                         act = constants.ST_ONLINE_SOURCE;
                         intent = new Intent(settingsContext, activity_config_onlineFiles.class);
                         intent.putExtra(constants.INTENT_EXTRA_DATA_RESTRICTION, actualConf.restFrom + "," + actualConf.restTo);
                         break;
-                    case "Sensor-Data":
+                    case constants.ST_SENSOR_DATA:
                         act = constants.ST_SENSOR_DATA;
                         startSensorConfig(findViewById(android.R.id.content));
                         intent = new Intent(settingsContext, activity_config_sensor.class);
                         break;
-                    case "File-Source":
+                    case constants.ST_FILE_SOURCE:
                         act = constants.ST_FILE_SOURCE;
                         intent = new Intent(settingsContext, activity_config_onlineFiles.class); //TODO: change eventually
                         break;
@@ -243,22 +243,26 @@ public class Settings extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            switch (getIntent().getStringExtra(constants.INTENT_EXTRA_RETURN)) {
+                case (constants.INTENT_EXTRA_RETURN_SATELLITE): // INTENT CASES HERE
+                    Gson converter = new Gson();
+                    sSetting temp = converter.fromJson(getIntent().getStringExtra(constants.INTENT_EXTRA_SATELLITE_CONFIG), sSetting.class);
+                    setNewConfig(temp);
+                    break;
+                case (constants.INTENT_EXTRA_RETURN_SENSOR):
+                    actualConf.sourceConfig.source = data.getStringExtra(constants.INTENT_EXTRA_ACTUAL_SENSOR);
+                    break;
+                case (constants.INTENT_EXTRA_RETURN_SARRAY):
+                    actualConf.strengthArray = getIntent().getStringArrayExtra(constants.INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY);
+                    break;
+            }
 
-        switch (getIntent().getStringExtra(constants.INTENT_EXTRA_RETURN)){
-           /* case(constants.INTENT_EXTRA_RETURN_ONLINEFILE): TODO: constants??
-                break;*/
+
+        } catch (NullPointerException e) {
+            System.out.println("No data received from intent");
+            e.printStackTrace();
         }
-
-
-        if(requestCode == 0){
-            if(resultCode == RESULT_OK){
-                actualConf.sourceConfig.source = data.getStringExtra(constants.INTENT_EXTRA_ACTUAL_SENSOR);
-            }
-        } else if(requestCode == 1){
-            if(resultCode == RESULT_OK){ //TODO: anpassen: codes stehen für den configurationstyp; switch for codes
-                actualConf.strengthArray = getIntent().getStringArrayExtra(constants.INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY);
-            }
-        }//TODO: satellite return must be set!
 
     }
 

@@ -37,7 +37,7 @@ public class activity_config_sensor extends AppCompatActivity {
         sensorThis = this;
         System.out.println("sensors started");
         //actualConf = (sSetting) getIntent().getSerializableExtra("actualConfig");
-        actualSourcePath = getIntent().getStringExtra("actualSourcePath");
+        actualSourcePath = getIntent().getStringExtra(constants.INTENT_EXTRA_ACTUAL_SOURCE_PATH);
         getSensors();
         addSensors();
         saveConfig = (Button) findViewById(R.id.btn_config_sensor_saveConfig);
@@ -51,7 +51,7 @@ public class activity_config_sensor extends AppCompatActivity {
                 RadioButton r = (RadioButton) vg.getChildAt(idx);
                 //actualConf.sourcePath = r.getText().toString();
                 Intent resultData = new Intent();
-                resultData.putExtra("sensor", r.getText().toString());
+                resultData.putExtra(constants.INTENT_EXTRA_RETURN_SENSOR, r.getText().toString());
                 setResult(Activity.RESULT_OK, resultData);
                 Toast toast = makeText(sensorThis, "Configuration successfully saved", Toast.LENGTH_SHORT);
                 toast.show();
@@ -87,7 +87,7 @@ public class activity_config_sensor extends AppCompatActivity {
                 rb.setTextSize(24);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.topMargin = 10000;       //TODO: add margin correctly
+                params.topMargin = 10000;
                 rb.setId(counter);
                 ((ViewGroup) findViewById(R.id.activity_config_sensor_sublayout_radio)).addView(rb);
                 counter++;

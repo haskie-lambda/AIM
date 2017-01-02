@@ -42,12 +42,6 @@ public class AIM_start extends AppCompatActivity {
         lbl_actualConf.setText(getActualConfigName().replace("config_", ""));
 
 
-        lbl_actualConf.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                lbl_actualConf.setText(getActualConfigName().replace("config_", ""));
-            }
-        });
-
         startButton = (Button) findViewById(R.id.start_AIM);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

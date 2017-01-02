@@ -33,6 +33,9 @@ public class constants extends Application {
     public static final String INTENT_EXTRA_DATA_RESTRICTION = "dataRest";
     public static final String INTENT_EXTRA_SATELLITE_CONFIG = "satelliteConfig";
     public static final String INTENT_EXTRA_RETURN = "config_return";
+    public static final String INTENT_EXTRA_RETURN_SENSOR = "sensor_return";
+    public static final String INTENT_EXTRA_RETURN_SATELLITE = "satellite_return";
+    public static final String INTENT_EXTRA_RETURN_SARRAY = "sArray_return";
 
     public static final String INTENT_EXTRA_RETURN_ONLINEFILE = "return_online";
 
@@ -42,6 +45,7 @@ public class constants extends Application {
     public static final String DATA_ANALYSIS_SPECIALLINE_FIRST_LINE = "fl";
     public static final String DATA_ANALYSIS_SPECIALLINE_NO = "no";
 
+    public static final int NOTIFICATION_ID = 11;
 
     public static final String getConstant(String constant){
         return constant;

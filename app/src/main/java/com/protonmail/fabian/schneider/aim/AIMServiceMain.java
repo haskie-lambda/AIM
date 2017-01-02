@@ -37,6 +37,7 @@ import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by faebl on 08.11.16.
@@ -49,7 +50,6 @@ public class AIMServiceMain extends Service {
 
     //Setting specific stuff
     public sSetting configuration;
-    final constants constants = (constants) getApplicationContext();
 
     ///Setting specific stuff
 
@@ -76,6 +76,7 @@ public class AIMServiceMain extends Service {
 
         @Override
         public void handleMessage(Message msg){
+
             //System.out.println("config_check in Message-Handler: " + Boolean.toString(configuration.reps==-1)); TODO: NPE with configuration.reps why??
             PhoneStateListener phoneStateListener= new PhoneStateListener(){
                 @Override
@@ -175,7 +176,7 @@ public class AIMServiceMain extends Service {
                                 strength = an.analyseData();
                                 ///DEFAULT
 
-                            if (strength != -1) {                   // TODO: DAIIM ???
+                            if (strength != -1) {
                                 System.out.println("Strength: " + strength);
                                 publishProgress(Integer.toString(strength));
                             } else {
@@ -245,7 +246,7 @@ public class AIMServiceMain extends Service {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     };
 
-    private void aimNotify() {              //TODO notification service causing crash...
+    private void aimNotify() {
 
         manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent intent = new Intent("com.protonmail.fabian.schneider.aim.SERVICE");
@@ -262,7 +263,7 @@ public class AIMServiceMain extends Service {
         builder.build();
 
         myNotification = builder.getNotification();
-        manager.notify(11, myNotification);
+        manager.notify(constants.NOTIFICATION_ID, myNotification);
 
     }
 
@@ -329,16 +330,16 @@ public class AIMServiceMain extends Service {
 
 
     protected void setConfiguration(){
-        SharedPreferences prefs = getSharedPreferences("configuration", MODE_PRIVATE);
-        String configName = prefs.getString("actualConfig", "");
-        if(!configName.contains("config_")){
-            configName = "config_" + configName;
+        SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
+        String configName = prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG, "");
+        if(!configName.contains(constants.CONF_PREFIX)){
+            configName = constants.CONF_PREFIX + configName;
         }
         Gson gson = new Gson();
         String json;
         json = prefs.getString(configName, "");
         configuration = gson.fromJson(json, sSetting.class);
-        System.out.println("config_check: " + configuration.sourceConfig.source);
+        System.out.println("config_check after alloc: " + String.valueOf(configuration.repTime));
     }
 
 
@@ -362,6 +363,7 @@ public class AIMServiceMain extends Service {
     @Override
     public void onDestroy() {
         Toast.makeText(this, "AIM shutdown", Toast.LENGTH_SHORT).show();
+        manager.cancel(constants.NOTIFICATION_ID);
         super.onDestroy();
     }
 
@@ -369,7 +371,7 @@ public class AIMServiceMain extends Service {
 
 
     //AIM Methods
-    protected void publishProgress(String... values) {      //TODO: set text on activity with intents
+    protected void publishProgress(String... values) {
         if (values[0].equals("Current data is not okay")) {
             //status.setText(values[0]);
             //play no sound so i know that satellites are down
@@ -443,11 +445,10 @@ public class AIMServiceMain extends Service {
             String line;
             int i = 0;
             while ((line = br.readLine()) != null) {
-                if(i==0){
-                    firstLine = line;
-                }
                 if(i==lineNumber){
                     numberLine = line;
+                } else {
+                    firstLine = line;
                 }
                 downData += line;
                 lastLine = line;
@@ -501,15 +502,14 @@ public class AIMServiceMain extends Service {
         boolean preanalyse(){
             dataDate = this.getDataDate(data);
             sDate = this.getDataTime(dataDate);
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy MMM dd HHmm");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy MMM dd HHmm", Locale.US);
 
-            //TODO make date convert right
             try {
                 dateToCheck.setTime(formatter.parse(dataDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            formatter = new SimpleDateFormat("HHmm");
+            formatter = new SimpleDateFormat("HHmm", Locale.US);
             try {
                 timeToCheck.setTime(formatter.parse(sDate));
             } catch (ParseException e) {
@@ -526,13 +526,12 @@ public class AIMServiceMain extends Service {
 
             System.out.println("dateToCheck: " + dateToCheck + "; current Date: " + currentDate);
             System.out.println("timeToCheck: " + timeToCheck + "; current Time: " + currentTime);
-            System.out.println("timeToCheck Time:" + timeToCheck.HOUR + ":" + timeToCheck.MINUTE);
-            System.out.println("time checked: " + currentTime.HOUR + ":" + currentTime.MINUTE);
+            System.out.println("timeToCheck Time:" + timeToCheck.getTime());
+            System.out.println("time checked: " + currentTime.getTime());
 
-            //TODO: WHY is the check ALWAYS true??
-            if(dateToCheck.YEAR == currentDate.YEAR && dateToCheck.MONTH == currentDate.MONTH &&
-                    dateToCheck.DAY_OF_MONTH == currentDate.DAY_OF_MONTH &&
-                    timeToCheck.HOUR == currentTime.HOUR && timeToCheck.MINUTE == currentTime.MINUTE){      //&& !timeToCheck.before(currentTime.getTime())
+            if(dateToCheck.getTime().getYear() == currentDate.getTime().getYear() && dateToCheck.getTime().getMonth() == currentDate.getTime().getMonth() &&
+                    dateToCheck.getTime().getDay() == currentDate.getTime().getDay() &&
+                    timeToCheck.getTime().getHours() == currentTime.getTime().getHours() && timeToCheck.getTime().getMinutes() == currentTime.getTime().getMinutes()){      //&& !timeToCheck.before(currentTime.getTime())
                 return true;
             } else {
                 return false;

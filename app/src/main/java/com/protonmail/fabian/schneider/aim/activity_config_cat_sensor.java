@@ -38,7 +38,6 @@ public class activity_config_cat_sensor extends AppCompatActivity {
     private Sensor sensor;
 
     private String actualSensor;
-    final constants constants = (constants) getApplicationContext();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +95,7 @@ public class activity_config_cat_sensor extends AppCompatActivity {
                 resultData.putExtra("strengthArray", tempString);
 
                 setResult(Activity.RESULT_OK, resultData);
-                TODO: make new saving procedure for dynamically strength setting
+                TODO: correct saving procedure!!
 
                 for(LinearLayout ll:((LinearLayout) findViewById(R.id.config_cat_sensor_linScrollLayout))){                 FOREACH NOT WORKIGN WITH LINEAR LAYOUT
 

@@ -19,7 +19,6 @@ public class activity_config_onlineFiles extends AppCompatActivity { //TODO: usa
     Button saveConfig;
     EditText errorPattern;
     Context onlineFilesThis;
-    final constants constants = (constants) getApplicationContext();
     int[] dataRest = new int[2];
 
     @Override
@@ -31,7 +30,7 @@ public class activity_config_onlineFiles extends AppCompatActivity { //TODO: usa
         saveConfig = (Button) findViewById(R.id.onSource_saveConfig);
         errorPattern = (EditText) findViewById(R.id.onSource_errorPattern);
 
-        webView.loadUrl("http://www.google.com"); //TODO: make generic
+        webView.loadUrl("http://www.google.com");
 
         saveConfig.setOnClickListener(new View.OnClickListener() {
             @Override

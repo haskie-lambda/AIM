@@ -22,7 +22,6 @@ import static android.widget.Toast.makeText;
 
 public class activity_config_satellites extends AppCompatActivity {
     //TODO: add Satellites to the scrolling activity with standard configs
-    final constants constants = (constants) getApplicationContext();
     Button saveConfig;
     Context configSatellitesThis;
 
@@ -33,7 +32,6 @@ public class activity_config_satellites extends AppCompatActivity {
         configSatellitesThis = this;
         saveConfig = (Button) findViewById(R.id.config_satellites_saveConfig);
 
-        //TODO: return json to gson sSetting for "unpacking" and saving in Settings activity in onClickListener
         SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
         if(prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG, "").equals("GEOS Magnetometer")){
             ((RadioButton) findViewById(R.id.config_satellites_rb_geos)).setSelected(true);
