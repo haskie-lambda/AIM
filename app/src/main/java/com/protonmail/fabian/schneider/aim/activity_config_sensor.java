@@ -44,21 +44,28 @@ public class activity_config_sensor extends AppCompatActivity {
 
         saveConfig.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                RadioGroup vg = (RadioGroup) findViewById(R.id.activity_config_sensor_sublayout_radio);
-                int radioButtonID = vg.getCheckedRadioButtonId();
-                View radioButton = vg.findViewById(radioButtonID);
-                int idx = vg.indexOfChild(radioButton);
-                RadioButton r = (RadioButton) vg.getChildAt(idx);
-                //actualConf.sourcePath = r.getText().toString();
-                Intent resultData = new Intent();
-                resultData.putExtra(constants.INTENT_EXTRA_RETURN_SENSOR, r.getText().toString());
-                setResult(Activity.RESULT_OK, resultData);
-                Toast toast = makeText(sensorThis, "Configuration successfully saved", Toast.LENGTH_SHORT);
-                toast.show();
-                finish();
+                try {
+                    RadioGroup vg = (RadioGroup) findViewById(R.id.activity_config_sensor_sublayout_radio);
+                    int radioButtonID = vg.getCheckedRadioButtonId();
+                    View radioButton = vg.findViewById(radioButtonID);
+                    int idx = vg.indexOfChild(radioButton);
+                    RadioButton r = (RadioButton) vg.getChildAt(idx);
+                    //actualConf.sourcePath = r.getText().toString();
+                    Intent resultData = new Intent();
+                    resultData.putExtra(constants.INTENT_EXTRA_RETURN_SENSOR, r.getText().toString());
+                    setResult(Activity.RESULT_OK, resultData);
+                    Toast toast = makeText(sensorThis, "Configuration successfully saved", Toast.LENGTH_SHORT);
+                    toast.show();
+                    finish();
+                } catch(NullPointerException e){
+                    System.out.println("NO CONFIG CHOSEN!");
+                    e.printStackTrace();
+                    Toast toast = makeText(sensorThis, "Please choose a configruation", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
-
+//TODO: make initialization of spinners !!
     }
 
     private void initSensors(){

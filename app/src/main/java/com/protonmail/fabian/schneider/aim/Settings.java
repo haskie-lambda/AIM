@@ -244,7 +244,12 @@ public class Settings extends AppCompatActivity {
                     actualConf.strengthArray = new ArrayList<String>();
                     actualConf.strengthArray = data.getStringArrayListExtra(constants.INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY);
                     setNewConfig(actualConf);
-                    System.out.println("new conf with new StrengthArray set:" + actualConf.strengthArray.get(1));
+                    try {
+                        System.out.println("new conf with new StrengthArray set:" + actualConf.strengthArray.get(0));
+                    }catch (NullPointerException e){
+                        System.out.println("no array");
+                        e.printStackTrace();
+                    }
                     break;
             }
 

@@ -371,11 +371,11 @@ public class AIMServiceMain extends Service {
     }
 
 
-
+//TODO: service not analysing data correctly
 
     //AIM Methods
     protected void publishProgress(String... values) {
-        if (values[0].equals("Current data is not okay")) {
+        if (values[0].equals("Current data is not okay") || values[0].equals("Data Date not okay")) {
             //status.setText(values[0]);
             //play no sound so i know that satellites are down
 
