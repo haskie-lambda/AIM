@@ -219,6 +219,8 @@ public class AIMServiceMain extends Service {
         } catch (IOException e) {
             System.out.println("IOException in dI alloc");
 
+            e.printStackTrace();
+
             boolean nA = networkAvaiable();
             if (!nA){
                 //stop service publish no conn
@@ -226,6 +228,7 @@ public class AIMServiceMain extends Service {
                     SharedPreferences prefs = getSharedPreferences("configuration", MODE_PRIVATE);
                     SharedPreferences.Editor prefsEditor = prefs.edit();
                     prefsEditor.putString("serviceStatus", "stop").commit();
+
                 }
 
 
@@ -574,7 +577,7 @@ public class AIMServiceMain extends Service {
             double tempSplit = Double.parseDouble(temp);
             int counter = 0;
             int[] checkLine;
-            for (int i=0;i<=configuration.strengthArray.length;i++){
+            for (int i=0;i<=configuration.strengthArray.size();i++){
                 checkLine = configuration.splitStrenthArray(i);
                 if(tempSplit>=checkLine[0] && tempSplit<=checkLine[1]){
                     return checkLine[2];

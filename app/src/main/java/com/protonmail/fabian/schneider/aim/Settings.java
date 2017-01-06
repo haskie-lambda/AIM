@@ -86,21 +86,8 @@ public class Settings extends AppCompatActivity {
         }
 
         setActualConfig();
-        // initialize settings view for a configuration object
 
         //Listeners
-
-        /* TEST LISTENER
-        lbl_test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast toast = makeText(settingsContext, "Test Data: " + actualConf.sourcePath, Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
-        */
-
-
 
         configSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -244,17 +231,20 @@ public class Settings extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
-            switch (getIntent().getStringExtra(constants.INTENT_EXTRA_RETURN)) {
+            switch (data.getStringExtra(constants.INTENT_EXTRA_RETURN)) {
                 case (constants.INTENT_EXTRA_RETURN_SATELLITE): // INTENT CASES HERE
                     Gson converter = new Gson();
-                    sSetting temp = converter.fromJson(getIntent().getStringExtra(constants.INTENT_EXTRA_SATELLITE_CONFIG), sSetting.class);
+                    sSetting temp = converter.fromJson(data.getStringExtra(constants.INTENT_EXTRA_SATELLITE_CONFIG), sSetting.class);
                     setNewConfig(temp);
                     break;
                 case (constants.INTENT_EXTRA_RETURN_SENSOR):
                     actualConf.sourceConfig.source = data.getStringExtra(constants.INTENT_EXTRA_ACTUAL_SENSOR);
                     break;
                 case (constants.INTENT_EXTRA_RETURN_SARRAY):
-                    actualConf.strengthArray = getIntent().getStringArrayExtra(constants.INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY);
+                    actualConf.strengthArray = new ArrayList<String>();
+                    actualConf.strengthArray = data.getStringArrayListExtra(constants.INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY);
+                    setNewConfig(actualConf);
+                    System.out.println("new conf with new StrengthArray set:" + actualConf.strengthArray.get(1));
                     break;
             }
 

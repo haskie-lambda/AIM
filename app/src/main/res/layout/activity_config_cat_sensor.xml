@@ -31,20 +31,6 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:text="-"
-        android:id="@+id/config_cat_sensor_remRow"
-        android:minWidth="40dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/button_custom_round"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_above="@+id/btn_config_cat_sensor_saveConfig"
-        android:layout_toLeftOf="@+id/config_cat_sensor_addRow"
-        android:layout_toStartOf="@+id/config_cat_sensor_addRow"
-        android:layout_marginRight="7dp"
-        android:layout_marginEnd="7dp" />
-
-    <Button
         android:text="+"
         android:id="@+id/config_cat_sensor_addRow"
         android:minWidth="40dp"
