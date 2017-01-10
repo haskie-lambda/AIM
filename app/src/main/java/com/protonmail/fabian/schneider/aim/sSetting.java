@@ -25,10 +25,11 @@ public class sSetting implements Serializable {
 
     public int restFrom = 72;
     public int restTo = 80;
+    public String restBy = "";
     public int lineOfFile = -1;
     public String specialLine = constants.DATA_ANALYSIS_SPECIALLINE_LAST_LINE;
 
-    public boolean validRequired = true;
+    public boolean validRequired = false;
     public long validDateTimeFrom = -1;
     public long validDateRange = 5*60;
     public int[] dateLocInFile = new int[] {35, 51};

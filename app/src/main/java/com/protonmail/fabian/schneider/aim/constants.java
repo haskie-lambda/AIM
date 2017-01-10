@@ -11,6 +11,7 @@ public class constants extends Application {
     public static final String ST_SENSOR_DATA = "Sensor-Data";
     public static final String ST_FILE_SOURCE = "File-Source";
     public static final String PST_ONLINE = "online";
+    public static final String PST_OFFLINE = "offline";
     public static final String ST_ERROR = "ERROR";
     public static final String ST_JUST_MESSAGES = "Just Messages";
 
@@ -19,8 +20,12 @@ public class constants extends Application {
 
     public static final String SET_INSTALLER = "installer";
 
+    public static final String SET_INSTALLER_MAIN = "bootMain";
+    public static final String SET_INSTALLER_SETTINGS = "bootSett";
+    public static final String SET_INSTALLER_CONFIG = "bootConfig";
+    public static final String SET_INSTALLER_CONFIG_CAT = "bootConfigCat";
+
     public static final String SHAREDPREF_CONFIG = "configuration";
-    public static final String SHAREDPREF_SYSTEM = "system";
     public static final String SHAREDPREF_ACTUAL_CONFIG = "actualConfig";
 
     public static final String CONF_PREFIX = "conf_";
@@ -36,7 +41,9 @@ public class constants extends Application {
     public static final String INTENT_EXTRA_RETURN_SENSOR = "sensor_return";
     public static final String INTENT_EXTRA_RETURN_SATELLITE = "satellite_return";
     public static final String INTENT_EXTRA_RETURN_SARRAY = "sArray_return";
-
+    public static final String INTENT_EXTRA_ONLINE_LOCAL = "onloc";
+    public static final String INTENT_EXTRA_DATA_RESTRICTION_BY = "dataRestBy";
+    public static final String INTENT_EXTRA_DATA_LINE_IN_FILE = "dataLineRest";
     public static final String INTENT_EXTRA_RETURN_ONLINEFILE = "return_online";
 
     public static final String SENSOR_CHECK_TEMP = "Temp";

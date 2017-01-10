@@ -16,15 +16,17 @@ import android.widget.Toast;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.protonmail.fabian.schneider.aim.R.id.activity_settings;
+import static com.protonmail.fabian.schneider.aim.R.id.lbl_actualConfig;
 
 public class AIM_start extends AppCompatActivity {
     public Context tThis;
     public TextView status;
     private Button startButton;
     private Button stopButton;
-    public static TextView lbl_actualConf;
 
-    public static TextView output;
+    public TextView lbl_actualConf;
+    public TextView output;
+
     private Button settings;
     protected void onCreate(Bundle savedInstanceState) {
         //app bar
@@ -34,12 +36,15 @@ public class AIM_start extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         myToolbar.showOverflowMenu();
         ///app bar
+
+        lbl_actualConf = (TextView) findViewById(R.id.lbl_actualConfig);
+        output =  (TextView) findViewById(R.id.lbl_output);
         setContentView(R.layout.activity_aim_start);
         tThis = this;
         status = (TextView) findViewById(R.id.statusView);
-        output = (TextView) findViewById(R.id.lbl_output);
-        lbl_actualConf = (TextView) findViewById(R.id.lbl_actualConfig);
         lbl_actualConf.setText(getActualConfigName().replace("config_", ""));
+
+
 
 
         startButton = (Button) findViewById(R.id.start_AIM);
@@ -53,6 +58,8 @@ public class AIM_start extends AppCompatActivity {
                 if(!prefs.getString("actualConfig", "").equals("")) {
                     prefsEditor.putString("serviceStatus", "run").commit();
                     startService(new Intent(tThis, AIMServiceMain.class));
+                    output.setText("AIM starting...");
+                    status.setText("Booting...");
                 } else{
                     Toast toast = Toast.makeText(tThis,"No Configuration set...", LENGTH_SHORT);
                     toast.show();
@@ -70,8 +77,8 @@ public class AIM_start extends AppCompatActivity {
                 SharedPreferences prefs = getSharedPreferences("configuration", MODE_PRIVATE);
                 SharedPreferences.Editor prefsEditor = prefs.edit();
                 prefsEditor.putString("serviceStatus", "stop").commit();
-                output.setText("Disconnected");
-                status.setText("Check your internet connection");
+                output.setText("Shutdown...");
+                status.setText("");
             }
         });
 

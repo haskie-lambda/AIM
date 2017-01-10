@@ -28,7 +28,7 @@ import static android.widget.GridLayout.HORIZONTAL;
 import static android.widget.GridLayout.LEFT;
 import static android.widget.Toast.makeText;
 
-public class activity_config_cat_sensor extends AppCompatActivity { //TODO: rename??
+public class activity_config_cat_sensor extends AppCompatActivity {
     private Context configCatSensorThis;
 
     private TextView sensorOutput;
@@ -51,7 +51,7 @@ public class activity_config_cat_sensor extends AppCompatActivity { //TODO: rena
 
         initStrengthArray(getIntent().getStringArrayListExtra(constants.INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY));
 
-        //sensorOutput = (TextView) findViewById(R.id.lbl_sensorOutput); TODO: make new lable for sensor output and other means
+        //sensorOutput = (TextView) findViewById(R.id.lbl_sensorOutput); TODO: in next update make new lable for sensor output and other means
 /*
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         actualSensor = getIntent().getStringExtra(constants.INTENT_EXTRA_ACTUAL_SENSOR);
@@ -68,8 +68,6 @@ public class activity_config_cat_sensor extends AppCompatActivity { //TODO: rena
 
         btn_saveConfig = (Button) findViewById(R.id.btn_config_cat_sensor_saveConfig);
 
-
-        //LISTENERS TODO: add functionality for add
         btn_saveConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,8 +87,6 @@ public class activity_config_cat_sensor extends AppCompatActivity { //TODO: rena
                     strength = "0"; //((Spinner) actualLayout.getChildAt(2).get)
                     strengths.add(from + "," + to + "," + strength);
                 }
-                //TODO: fix
-
 
                 Intent resultData = new Intent();
                 resultData.putExtra(constants.INTENT_EXTRA_RETURN, constants.INTENT_EXTRA_RETURN_SARRAY);
@@ -145,7 +141,6 @@ public class activity_config_cat_sensor extends AppCompatActivity { //TODO: rena
         etTo.setId(actualCount);
         tempLinLay.addView(etTo);
 
-        //TODO: ADD SPINNER WITH INIT SPINNER PROCEDURE
         spinStrength = makeSpinner();
         spinStrength.setId(actualCount);
         tempLinLay.addView(spinStrength);
@@ -171,7 +166,7 @@ public class activity_config_cat_sensor extends AppCompatActivity { //TODO: rena
         Spinner spin = new Spinner(configCatSensorThis);
         ArrayList arr = new ArrayList<String>();
 
-        int i;              //TODO: make generic in later version
+        int i;
         for(i=0;i<=3;i++){
             arr.add(i,String.valueOf(i));
         }

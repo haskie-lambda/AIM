@@ -43,8 +43,10 @@ public class Settings extends AppCompatActivity {
     private String actualConfigName;
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) { // TODO: ADD REQUIRES PREANALYSIS-VIEW; CHANGE DAAI DOKU WHEN DONE!
-        //TODO: add System configuration for DAAI
+    protected void onCreate(final Bundle savedInstanceState) {
+
+
+        //TODO: disable on disconnect and read messages & Static data
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -72,6 +74,8 @@ public class Settings extends AppCompatActivity {
 
         lbl_test = (TextView) findViewById(R.id.lbl_test);
 
+
+        configSpinner.setFocusable(true);
         //Styles
         sb_dataType.getProgressDrawable().setColorFilter(Color.parseColor("#3644D9"), PorterDuff.Mode.SRC_IN);
         sb_dataType.getThumb().setColorFilter(Color.parseColor("#3644D9"), PorterDuff.Mode.SRC_IN);
@@ -148,10 +152,11 @@ public class Settings extends AppCompatActivity {
                         if(!temp.toString().equals(name)){
                             prefsEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG, temp.toString()).commit();
                             setActualConfig();
+                            //TODO: reInit settings view
                             return;
                         }
                     } catch (NullPointerException e) {
-                        System.out.println("Eement " + Integer.toString(i) + ": NULL");
+                        System.out.println("Element " + Integer.toString(i) + ": NULL");
                     }
                 }
             }
@@ -166,19 +171,23 @@ public class Settings extends AppCompatActivity {
                         act = constants.ST_SATELLITES;
                         intent = new Intent(settingsContext, activity_config_satellites.class);
                         break;
-                    case constants.ST_ONLINE_SOURCE:
-                        act = constants.ST_ONLINE_SOURCE;
-                        intent = new Intent(settingsContext, activity_config_onlineFiles.class);
-                        intent.putExtra(constants.INTENT_EXTRA_DATA_RESTRICTION, actualConf.restFrom + "," + actualConf.restTo);
-                        break;
                     case constants.ST_SENSOR_DATA:
                         act = constants.ST_SENSOR_DATA;
                         startSensorConfig(findViewById(android.R.id.content));
                         intent = new Intent(settingsContext, activity_config_sensor.class);
+                        intent.putExtra(constants.INTENT_EXTRA_ACTUAL_SOURCE_PATH, actualConf.sourceConfig.source);
+                        break;
+                    case constants.ST_ONLINE_SOURCE:
+                        act = constants.ST_ONLINE_SOURCE;
+                        intent = new Intent(settingsContext, activity_config_onlineFiles.class);
+                        intent.putExtra(constants.INTENT_EXTRA_DATA_RESTRICTION, actualConf.restFrom + "," + actualConf.restTo);
+                        intent.putExtra(constants.INTENT_EXTRA_ONLINE_LOCAL, constants.PST_ONLINE);
                         break;
                     case constants.ST_FILE_SOURCE:
                         act = constants.ST_FILE_SOURCE;
                         intent = new Intent(settingsContext, activity_config_onlineFiles.class); //TODO: change eventually
+                        intent.putExtra(constants.INTENT_EXTRA_DATA_RESTRICTION, actualConf.restFrom + "," + actualConf.restTo +"," + actualConf.restBy);
+                        intent.putExtra(constants.INTENT_EXTRA_ONLINE_LOCAL, constants.PST_OFFLINE);
                         break;
                     /*case "Bluetooth-Source":
                         act = "Bluetooth-Source";
@@ -210,7 +219,6 @@ public class Settings extends AppCompatActivity {
     }
 
     public void startConfig(Intent intent){
-        intent.putExtra(constants.INTENT_EXTRA_ACTUAL_SOURCE_PATH, actualConf.sourceConfig.sourceType);
         startActivityForResult(intent, 0);
     }
 
@@ -250,6 +258,15 @@ public class Settings extends AppCompatActivity {
                         System.out.println("no array");
                         e.printStackTrace();
                     }
+                    break;
+                case (constants.INTENT_EXTRA_RETURN_ONLINEFILE):
+                    actualConf.sourceConfig.errorPattern = data.getStringExtra(constants.INTENT_EXTRA_ERROR_PATTERN);
+                    actualConf.restFrom = data.getIntArrayExtra(constants.INTENT_EXTRA_DATA_RESTRICTION)[0];
+                    actualConf.restTo = data.getIntArrayExtra(constants.INTENT_EXTRA_DATA_RESTRICTION)[1];
+                    actualConf.sourceConfig.source = data.getStringExtra(constants.INTENT_EXTRA_SOURCE_URL);
+                    actualConf.restBy = data.getStringExtra(constants.INTENT_EXTRA_DATA_RESTRICTION_BY);
+                    actualConf.lineOfFile = data.getIntExtra(constants.INTENT_EXTRA_DATA_LINE_IN_FILE, -1);
+
                     break;
             }
 
@@ -344,7 +361,7 @@ public class Settings extends AppCompatActivity {
         sb_MessFunc.setProgress(actualConf.readMessages ? 1:0);
 
         userDefinedConfigName.setText(actualConf.name.replace(constants.CONF_PREFIX,""));
-        AIM_start.lbl_actualConf.setText(actualConf.name.replace(constants.CONF_PREFIX,""));
+        //AIM_start.lbl_actualConf.setText(actualConf.name.replace(constants.CONF_PREFIX,"")); TODO: set new actualConf on homescreen
         initSpinners();
 
         selectSpinnerValue(configSpinner, actualConfigName.replace(constants.CONF_PREFIX,""));

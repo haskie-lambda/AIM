@@ -77,7 +77,7 @@ public class AIMServiceMain extends Service {
         @Override
         public void handleMessage(Message msg){
 
-            //System.out.println("config_check in Message-Handler: " + Boolean.toString(configuration.reps==-1)); TODO: NPE with configuration.reps why??
+            //System.out.println("config_check in Message-Handler: " + Boolean.toString(configuration.reps==-1));
             PhoneStateListener phoneStateListener= new PhoneStateListener(){
                 @Override
                 public void onCallStateChanged(int state, String incomingNumber){
@@ -164,8 +164,6 @@ public class AIMServiceMain extends Service {
 
                         System.out.println("lineToAnalyse: " + lineToAnalyse);
                         if(!lineToAnalyse.contains(configuration.sourceConfig.errorPattern)){
-                            //TODO: get algorithm set and decide weather default or other...
-
                                 //DEFAULT
                                 int[] temp = new int[2];
                                 temp[0] = configuration.restFrom;
@@ -259,7 +257,7 @@ public class AIMServiceMain extends Service {
         builder.setTicker("TICKER");
         builder.setContentTitle("AIM-Service");
         builder.setContentText("AIM-Service-Text - Strength");
-        builder.setSmallIcon(R.drawable.rect);
+        builder.setSmallIcon(R.drawable.icon);
         builder.setContentIntent(pendingIntent);
         builder.setOngoing(true);
         builder.setNumber(100);

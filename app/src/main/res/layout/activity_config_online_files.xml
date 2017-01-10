@@ -22,78 +22,182 @@
         android:id="@+id/textView9"
         android:textSize="26sp"
         android:textColor="@android:color/black" />
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="URL"
-            android:ems="10"
-            android:layout_below="@+id/textView9"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/editText"
-            android:inputType="textUri"
-            android:layout_weight="0.95"
-            android:layout_gravity="left"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Go"
-            android:id="@+id/onSource_webView_go"
-            android:layout_weight="0.05"
-            android:layout_gravity="right|center_vertical"
-            android:gravity="center_vertical"/>
-    </LinearLayout>
-    <WebView
-        android:layout_width="match_parent"
-        android:layout_below="@+id/editText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_height="358dp"
-        android:layout_x="-63dp"
-        android:layout_y="238dp"
-        android:id="@+id/onSource_webView">
-    </WebView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:layout_gravity="left|center_vertical"
-            android:text="Error Pattern:"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:gravity="center_vertical" />
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:layout_gravity="right"
-            android:text="e.g. -1.005e-2"
-            android:id="@+id/onSource_errorPattern"/>
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:layout_below="@+id/textView9"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/et_webViewUrl"
+                    android:inputType="textUri"
+                    android:layout_weight="0.95"
+                    android:layout_gravity="left"
+                    android:hint="URL" />
 
-    </LinearLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Go"
+                    android:id="@+id/onSource_webView_go"
+                    android:layout_weight="0.05"
+                    android:layout_gravity="right|center_vertical"
+                    android:gravity="center_vertical"/>
+            </LinearLayout>
+            <WebView
+                android:layout_width="match_parent"
+                android:layout_below="@+id/et_webViewUrl"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_height="332dp"
+                android:layout_x="-63dp"
+                android:layout_y="238dp"
+                android:id="@+id/onSource_webView">
+            </WebView>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Configuration"
-        android:id="@+id/onSource_saveConfig"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_x="-32dp"
-        android:layout_y="378dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:layout_gravity="left|center_vertical"
+                    android:text="Error Pattern:"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical" />
 
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:layout_gravity="right"
+                    android:id="@+id/onSource_errorPattern"
+                    android:contentDescription="e.g. -1.005e-2"
+                    android:hint="e.g. -1.005e-2" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:layout_gravity="left|center_vertical"
+                    android:text="Restricted from:"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:layout_gravity="right"
+                    android:id="@+id/onSource_restFrom"
+                    android:hint="e.g. 5" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:layout_gravity="left|center_vertical"
+                    android:text="Restricted to:"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:layout_gravity="right"
+                    android:id="@+id/onSource_restTo"
+                    android:hint="e.g. 5" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:layout_gravity="left|center_vertical"
+                    android:text="Restricted by:"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:layout_gravity="right"
+                    android:id="@+id/onSource_restBy"
+                    android:hint="e.g. ;" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:layout_gravity="left|center_vertical"
+                    android:text="Line in file:"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:layout_gravity="right"
+                    android:id="@+id/onSource_lineOfFile"
+                    android:hint="e.g. ;" />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Configuration"
+                android:id="@+id/onSource_saveConfig"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_x="-32dp"
+                android:layout_y="378dp" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

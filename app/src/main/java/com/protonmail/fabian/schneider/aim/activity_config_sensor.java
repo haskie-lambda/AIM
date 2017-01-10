@@ -60,12 +60,11 @@ public class activity_config_sensor extends AppCompatActivity {
                 } catch(NullPointerException e){
                     System.out.println("NO CONFIG CHOSEN!");
                     e.printStackTrace();
-                    Toast toast = makeText(sensorThis, "Please choose a configruation", Toast.LENGTH_SHORT);
+                    Toast toast = makeText(sensorThis, "Please choose a configuration", Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
         });
-//TODO: make initialization of spinners !!
     }
 
     private void initSensors(){

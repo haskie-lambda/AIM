@@ -21,9 +21,10 @@ import com.google.gson.Gson;
 import static android.widget.Toast.makeText;
 
 public class activity_config_satellites extends AppCompatActivity {
-    //TODO: add Satellites to the scrolling activity with standard configs
+    //TODO: in next update add Satellites to the scrolling activity with standard configs
     Button saveConfig;
     Context configSatellitesThis;
+    public RadioButton geos = (RadioButton) findViewById(R.id.config_satellites_rb_geos);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,8 @@ public class activity_config_satellites extends AppCompatActivity {
         saveConfig = (Button) findViewById(R.id.config_satellites_saveConfig);
 
         SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
-        if(prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG, "").equals("GEOS Magnetometer")){
-            ((RadioButton) findViewById(R.id.config_satellites_rb_geos)).setSelected(true);
+        if(prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG, "").replace(constants.CONF_PREFIX,"").equals("GEOS Magnetometer")){
+            geos.setSelected(true);
         }
 
 
