@@ -24,7 +24,7 @@ public class activity_config_satellites extends AppCompatActivity {
     //TODO: in next update add Satellites to the scrolling activity with standard configs
     Button saveConfig;
     Context configSatellitesThis;
-    public RadioButton geos = (RadioButton) findViewById(R.id.config_satellites_rb_geos);
+    public RadioButton geos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,7 @@ public class activity_config_satellites extends AppCompatActivity {
         configSatellitesThis = this;
         saveConfig = (Button) findViewById(R.id.config_satellites_saveConfig);
 
+        geos = (RadioButton) findViewById(R.id.config_satellites_rb_geos);
         SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
         if(prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG, "").replace(constants.CONF_PREFIX,"").equals("GEOS Magnetometer")){
             geos.setSelected(true);

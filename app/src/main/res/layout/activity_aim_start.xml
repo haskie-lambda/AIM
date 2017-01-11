@@ -20,6 +20,20 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AIM OS"
+        android:textIsSelectable="false"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:textColor="#0a0a53"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:contentDescription="Analysis of Interplanetary Magnetic-Field Data" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +67,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="[OUTPUT]"
         android:id="@+id/lbl_output"
         android:layout_x="139dp"
         android:layout_y="372dp"
@@ -65,7 +78,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
         android:id="@+id/statusView"
         android:textSize="25dp"
         android:layout_marginBottom="13dp"
@@ -75,19 +87,6 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Analysis of Interplanetary Magnetic-Field Data"
-        android:textIsSelectable="false"
-        android:textSize="24dp"
-        android:textAlignment="center"
-        android:id="@+id/textView"
-        android:layout_alignBottom="@+id/my_toolbar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:text="..."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/stop_AIM"

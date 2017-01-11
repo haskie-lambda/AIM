@@ -46,7 +46,6 @@ public class AIM_start extends AppCompatActivity {
 
 
 
-
         startButton = (Button) findViewById(R.id.start_AIM);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -105,9 +104,9 @@ public class AIM_start extends AppCompatActivity {
 
     private String getActualConfigName (){
         String ret;
-        SharedPreferences prefs = getSharedPreferences("configuration", MODE_PRIVATE);
-        if(!prefs.getBoolean("installer", false)) {
-            ret = prefs.getString("actualConfig", "");
+        SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
+        if(!prefs.getBoolean(constants.SET_INSTALLER, false)) {
+            ret = prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG, "");
             System.out.println(ret);
         } else{
             ret = "";
