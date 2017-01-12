@@ -20,10 +20,11 @@ import static com.protonmail.fabian.schneider.aim.R.id.lbl_actualConfig;
 
 public class AIM_start extends AppCompatActivity {
     public Context tThis;
-    public TextView status;
+
     private Button startButton;
     private Button stopButton;
 
+    public TextView status;
     public TextView lbl_actualConf;
     public TextView output;
 
@@ -87,14 +88,32 @@ public class AIM_start extends AppCompatActivity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        double strength = intent.getDoubleExtra("STRENGTH", -1);
-                        //System.out.println("Strength to publish: " + strength);
+                        double strength = intent.getDoubleExtra(constants.INTENT_FILTER_STRENGTH, -1);
                         output.setText("Actual Strength: " + strength);
                     }
-                }, new IntentFilter("STRENGTH")
+                }, new IntentFilter(constants.INTENT_FILTER_STRENGTH)
         );
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        status.setText(intent.getStringExtra(constants.INTENT_FILTER_ADINFO));
+                    }
+                }, new IntentFilter(constants.INTENT_FILTER_ADINFO)
+        );
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        lbl_actualConf.setText(intent.getStringExtra(constants.INTENT_FILTER_ACTUALCONF));
+                    }
+                }, new IntentFilter(constants.INTENT_FILTER_ACTUALCONF)
+        );
     }
+
+
 
 
     public void sendMessage(View view){

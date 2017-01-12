@@ -45,7 +45,7 @@ public class activity_config_onlineFiles extends AppCompatActivity {
         if(getIntent().getStringExtra(constants.INTENT_EXTRA_ONLINE_LOCAL).equals(constants.PST_ONLINE)) {
             webView.loadUrl("http://www.google.com");
         } else {
-            webView.loadUrl("file:///"); //TODO: filepicker?
+            webView.loadUrl("file:///"); //TODO: in future update filepicker?
         }
 
 
@@ -64,7 +64,7 @@ public class activity_config_onlineFiles extends AppCompatActivity {
 
         webView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) { //TODO: get selection in later update
+            public boolean onTouch(View v, MotionEvent event) { //TODO: in later update get selection
                 if(event.getAction() == android.view.MotionEvent.ACTION_UP){
 
                 }

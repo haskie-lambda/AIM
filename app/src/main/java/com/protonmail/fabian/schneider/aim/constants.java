@@ -46,6 +46,10 @@ public class constants extends Application {
     public static final String INTENT_EXTRA_DATA_LINE_IN_FILE = "dataLineRest";
     public static final String INTENT_EXTRA_RETURN_ONLINEFILE = "return_online";
 
+    public static final String INTENT_FILTER_STRENGTH = "strength";
+    public static final String INTENT_FILTER_ADINFO = "adinfo";
+    public static final String INTENT_FILTER_ACTUALCONF = "intFilterActualConf";
+
     public static final String SENSOR_CHECK_TEMP = "Temp";
 
     public static final String DATA_ANALYSIS_SPECIALLINE_LAST_LINE = "ll";
@@ -54,8 +58,5 @@ public class constants extends Application {
 
     public static final int NOTIFICATION_ID = 11;
 
-    public static final String getConstant(String constant){
-        return constant;
-    }
 
 }

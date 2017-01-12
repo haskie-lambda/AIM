@@ -32,6 +32,9 @@ public class sSetting implements Serializable {
     public boolean validRequired = false;
     public long validDateTimeFrom = -1;
     public long validDateRange = 5*60;
+    public int validFrom = 0;
+    public int validTo = 0;
+    public int validLineOfFile = -1;
     public int[] dateLocInFile = new int[] {35, 51};
 
     public int[] timeLocInFile = new int[]{12, 16};

@@ -313,6 +313,9 @@ public class Settings extends AppCompatActivity {
         prefEditor.putString(constants.CONF_PREFIX + actualConf.name, json).commit();
         prefEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG, actualConf.name).commit();
         setActualConfig();
+        Intent pubIntent = new Intent(constants.INTENT_FILTER_ACTUALCONF);
+        pubIntent.putExtra(constants.INTENT_FILTER_ACTUALCONF, actualConf.name.replace(constants.CONF_PREFIX, ""));
+        sendBroadcast((pubIntent));
     }
 
 
@@ -362,6 +365,10 @@ public class Settings extends AppCompatActivity {
 
         userDefinedConfigName.setText(actualConf.name.replace(constants.CONF_PREFIX,""));
         //AIM_start.lbl_actualConf.setText(actualConf.name.replace(constants.CONF_PREFIX,"")); TODO: set new actualConf on homescreen
+        Intent pubIntent = new Intent(constants.INTENT_FILTER_ACTUALCONF);
+        pubIntent.putExtra(constants.INTENT_FILTER_ACTUALCONF, actualConf.name.replace(constants.CONF_PREFIX, ""));
+        sendBroadcast(pubIntent);
+
         initSpinners();
 
         selectSpinnerValue(configSpinner, actualConfigName.replace(constants.CONF_PREFIX,""));
@@ -401,11 +408,11 @@ public class Settings extends AppCompatActivity {
             this.arraySpinner.add(constants.ST_SATELLITES);
             this.arraySpinner.add(constants.ST_ONLINE_SOURCE);
             this.arraySpinner.add(constants.ST_SENSOR_DATA);
-            this.arraySpinner.add(constants.ST_FILE_SOURCE);
+            //this.arraySpinner.add(constants.ST_FILE_SOURCE); TODO: in future update
             //this.arraySpinner.add("Bluetooth-Source");
             //this.arraySpinner.add("Position");
         } else{
-            this.arraySpinner.add(constants.ST_FILE_SOURCE);
+            //this.arraySpinner.add(constants.ST_FILE_SOURCE); TODO: in future update
             this.arraySpinner.add(constants.ST_JUST_MESSAGES);
         }
         fillSpinner(sourceSpinner, arraySpinner);

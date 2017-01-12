@@ -124,7 +124,7 @@ public class AIMServiceMain extends Service {
     private void descTree(){
         //System.out.println("before publishProgress Update");
         //publishProgress("Calculation Started");
-
+        Intent pubIntent = new Intent(constants.INTENT_FILTER_STRENGTH);
         AIMServiceMain.dataImport dI;
         try {
             //get Data
@@ -164,38 +164,36 @@ public class AIMServiceMain extends Service {
 
                         System.out.println("lineToAnalyse: " + lineToAnalyse);
                         if(!lineToAnalyse.contains(configuration.sourceConfig.errorPattern)){
-                                //DEFAULT
-                                int[] temp = new int[2];
-                                temp[0] = configuration.restFrom;
-                                temp[1] = configuration.restTo;
 
-                                AIMServiceMain.analyse an = new AIMServiceMain.analyse(lineToAnalyse, temp);
-                                int strength;
-                                strength = an.analyseData();
-                                ///DEFAULT
+                            int[] temp = new int[2];
+                            temp[0] = configuration.restFrom;
+                            temp[1] = configuration.restTo;
+
+                            AIMServiceMain.analyse an = new AIMServiceMain.analyse(lineToAnalyse, temp);
+                            int strength;
+                            strength = an.analyseData();
+
+
 
                             if (strength != -1) {
-                                System.out.println("Strength: " + strength);
-                                publishProgress(Integer.toString(strength));
+                                pubIntent.putExtra(constants.INTENT_FILTER_ACTUALCONF, strength);
+                                System.out.println("ActualStrength: " + strength);
+                                myNotification.number = strength;
+                                play(String.valueOf(strength));
                             } else {
-                                System.out.println("Strength not found");
-                                //send signal for out of scope to output
-                                publishProgress("-1");
-                                //return "-1";
+                                pubIntent.putExtra(constants.INTENT_FILTER_STRENGTH, strength);
+                                pubIntent.putExtra(constants.INTENT_FILTER_ADINFO, "Error in Strength Array");
+                                System.out.println("ActualStrength: " + strength);
+                                myNotification.number = strength;
+                                play(String.valueOf(strength));
                             }
                         } else {
-                            System.out.println("Current data is not okay");
-                            publishProgress("Current data is not okay");
-                            //send signal for satellite down to output
-                            publishProgress("-1");
-                            //return "-1";
+                            pubIntent.putExtra(constants.INTENT_FILTER_STRENGTH, -1);
+                            pubIntent.putExtra(constants.INTENT_FILTER_ADINFO, "Invalid data");
                         }
                     } else {
-                        System.out.println("Data Date not okay");
-                        publishProgress("Data Date not okay");
-                        //send signal for satellite down to output
-                        publishProgress("-1");
-                        //return "-1";
+                        pubIntent.putExtra(constants.INTENT_FILTER_STRENGTH, -1);
+                        pubIntent.putExtra(constants.INTENT_FILTER_ADINFO, "Data out of valid period");
                     }
                 } else if(configuration.sourceConfig.parentSourceType.equals("offlineFile")){
                     System.out.println("            ParentSourceType == offlineFile");
@@ -210,7 +208,7 @@ public class AIMServiceMain extends Service {
 
             }
 
-
+            sendBroadcast(pubIntent);
             //catch statements
         } catch (MalformedURLException e) {
             System.out.println("MalformedUrlException for dI allocation");
@@ -372,7 +370,7 @@ public class AIMServiceMain extends Service {
 //TODO: service not analysing data correctly
 
     //AIM Methods
-    protected void publishProgress(String... values) {
+    protected void play(String... values) {
         if (values[0].equals("Current data is not okay") || values[0].equals("Data Date not okay")) {
             //status.setText(values[0]);
             //play no sound so i know that satellites are down
@@ -382,12 +380,8 @@ public class AIMServiceMain extends Service {
             //play no sound so i know that satellites are down
 
         } else {
-            System.out.println("before BoolCheck: " + loaded);
-            System.out.println("before audioOut");
-
             int tmpStrength = Integer.parseInt(values[0]);
             int streamId = audioOutput(tmpStrength);
-            //keep variable for termination
         }
     }
 
@@ -396,7 +390,6 @@ public class AIMServiceMain extends Service {
     }
 
     protected int audioOutput(int tmpStrength) {
-        System.out.println("audioOut called");
         int actRes;
         //return this.soundPool.play(this.strengthSound[tmpStrength], leftVolumn, rightVolumn, 1, 0, 1f);
         if (tmpStrength == 1) {
@@ -408,13 +401,6 @@ public class AIMServiceMain extends Service {
         } else {
             actRes = R.raw.strength4s;
         }
-        // UPDATE UI
-        Intent intent = new Intent("STRENGTH");
-        intent.putExtra("STRENGTH", (double) tmpStrength);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        ///UPDATE UI
-
-        System.out.println("actRes: " + actRes);
         MediaPlayer mediaPlayerOut = MediaPlayer.create(this, actRes);
         if(!silence){mediaPlayerOut.start();}
         return 0;
@@ -577,7 +563,11 @@ public class AIMServiceMain extends Service {
             int[] checkLine;
             for (int i=0;i<=configuration.strengthArray.size();i++){
                 checkLine = configuration.splitStrenthArray(i);
+                System.out.println("from: " + checkLine[0]);
+                System.out.println("to: " + checkLine[1]);
+                System.out.println("strength: " + checkLine[2]);
                 if(tempSplit>=checkLine[0] && tempSplit<=checkLine[1]){
+                    System.out.println("chosenStrength:" + checkLine[2]);
                     return checkLine[2];
                 }
                 counter++;
@@ -585,24 +575,8 @@ public class AIMServiceMain extends Service {
             return -1;
         }
 
-        private void splitDoubleStrengthArray(String strength){
-            String[] temp;
-            temp = strength.split(",");
-            for(int b = 0; b < temp.length; b++){
-                splittedStrength[b] = Double.parseDouble(temp[b]);
-            }
-        }
-
-
         private String getCalcData(){
             return data.substring(dataFromTo[0],dataFromTo[1]);
-        }
-
-        private void splitCalcData(){
-            splittedData[0] = data.substring(0,8);
-            splittedData[1] = data.substring(13,21);
-            splittedData[2] = data.substring(25,33);
-            splittedData[3] = data.substring(35);
         }
     }
 
