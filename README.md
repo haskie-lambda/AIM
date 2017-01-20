@@ -1,5 +1,5 @@
 # AIM OS
-###Analysis of the Interplanetary Magnetic field data; Open Sense- Android App, Java
+###Analysis of Interplanetary Magnetic field data; Open Sense- Android App, Java
 
 ##About AIM OS
 AIM OS is a project for developing an open source, programmable, sensoric input for humans.
