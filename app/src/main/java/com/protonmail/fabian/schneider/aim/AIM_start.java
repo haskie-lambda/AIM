@@ -37,15 +37,13 @@ public class AIM_start extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         myToolbar.showOverflowMenu();
         ///app bar
-
+        settings = (Button) findViewById(R.id.settings);
         lbl_actualConf = (TextView) findViewById(R.id.lbl_actualConfig);
         output =  (TextView) findViewById(R.id.lbl_output);
-        setContentView(R.layout.activity_aim_start);
         tThis = this;
         status = (TextView) findViewById(R.id.statusView);
+        System.out.println("new config to set: " + getActualConfigName());
         lbl_actualConf.setText(getActualConfigName().replace("config_", ""));
-
-
 
         startButton = (Button) findViewById(R.id.start_AIM);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -82,53 +80,53 @@ public class AIM_start extends AppCompatActivity {
             }
         });
 
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(tThis, Settings.class);
+                startActivity(intent);
+            }
+        });
+
+
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                System.out.println("received Intent");
+                if(intent.getDoubleExtra(constants.INTENT_FILTER_STRENGTH, -1) != -1){
+                    changeStrength(intent.getDoubleExtra(constants.INTENT_FILTER_STRENGTH, -1));
+                } else if (!intent.getStringExtra(constants.INTENT_FILTER_ACTUALCONF).equals("")){
+                    changeActualConf(intent.getStringExtra(constants.INTENT_FILTER_ACTUALCONF));
+                }
+            }
+        };
+
 //UI-Strength update
-
         LocalBroadcastManager.getInstance(this).registerReceiver(
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        double strength = intent.getDoubleExtra(constants.INTENT_FILTER_STRENGTH, -1);
-                        output.setText("Actual Strength: " + strength);
-                    }
-                }, new IntentFilter(constants.INTENT_FILTER_STRENGTH)
+                receiver, new IntentFilter(constants.INTENT_FILTER_STRENGTH)
         );
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        status.setText(intent.getStringExtra(constants.INTENT_FILTER_ADINFO));
-                    }
-                }, new IntentFilter(constants.INTENT_FILTER_ADINFO)
+                receiver, new IntentFilter(constants.INTENT_FILTER_ACTUALCONF)
         );
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        lbl_actualConf.setText(intent.getStringExtra(constants.INTENT_FILTER_ACTUALCONF));
-                    }
-                }, new IntentFilter(constants.INTENT_FILTER_ACTUALCONF)
-        );
     }
 
 
+    private void changeStrength(double strength){ output.setText("actual Strength: " + String.valueOf(strength)); }
 
-
-    public void sendMessage(View view){
-        Intent intent = new Intent(this, Settings.class);
-        startActivity(intent);
+    private void changeActualConf(String actualConf){
+        lbl_actualConf.setText(actualConf);
     }
 
     private String getActualConfigName (){
         String ret;
         SharedPreferences prefs = getSharedPreferences(constants.SHAREDPREF_CONFIG, MODE_PRIVATE);
         if(!prefs.getBoolean(constants.SET_INSTALLER, false)) {
-            ret = prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG, "");
+            ret = prefs.getString(constants.SHAREDPREF_ACTUAL_CONFIG, "No Configuration set...");
             System.out.println(ret);
         } else{
-            ret = "";
+            ret = "No Configuration set...";
         }
         return ret;
     }

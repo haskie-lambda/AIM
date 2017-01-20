@@ -84,7 +84,7 @@ public class activity_config_cat_sensor extends AppCompatActivity {
                     actualLayout = (LinearLayout) parentLayout.getChildAt(i);
                     from = ((TextView) actualLayout.getChildAt(0)).getText().toString();
                     to = ((TextView) actualLayout.getChildAt(1)).getText().toString();
-                    strength = "0"; //((Spinner) actualLayout.getChildAt(2).get)
+                    strength = getActualSpinnerValue((Spinner) actualLayout.getChildAt(2)); //((Spinner) actualLayout.getChildAt(2).get)
                     strengths.add(from + "," + to + "," + strength);
                 }
 
@@ -174,5 +174,15 @@ public class activity_config_cat_sensor extends AppCompatActivity {
         spin.setAdapter(adapter);
         return spin;
     }
+
+    private String getActualSpinnerValue(Spinner spin){
+        for(int i=0;i<=spin.getChildCount()-1;i++){
+            if(spin.getChildAt(i).isSelected()){
+                return spin.getChildAt(i).toString();
+            }
+        }
+        return "ERROR";
+    }
+
 
 }

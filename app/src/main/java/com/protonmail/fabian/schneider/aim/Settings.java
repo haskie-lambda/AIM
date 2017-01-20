@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -46,7 +47,7 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
 
 
-        //TODO: disable on disconnect and read messages & Static data
+        //TODO: read messages & Static data
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -218,6 +219,28 @@ public class Settings extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            System.out.println("backOverride");
+            setResult(0);
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy(){
+        System.out.println("onDestroy");
+        setResult(0);
+        super.onDestroy();
+    }
+
+
     public void startConfig(Intent intent){
         startActivityForResult(intent, 0);
     }
@@ -313,10 +336,12 @@ public class Settings extends AppCompatActivity {
         prefEditor.putString(constants.CONF_PREFIX + actualConf.name, json).commit();
         prefEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG, actualConf.name).commit();
         setActualConfig();
+
         Intent pubIntent = new Intent(constants.INTENT_FILTER_ACTUALCONF);
         pubIntent.putExtra(constants.INTENT_FILTER_ACTUALCONF, actualConf.name.replace(constants.CONF_PREFIX, ""));
-        sendBroadcast((pubIntent));
+        sendBroadcast(pubIntent);
     }
+
 
 
     public void setNewConfig(sSetting config){
@@ -365,6 +390,7 @@ public class Settings extends AppCompatActivity {
 
         userDefinedConfigName.setText(actualConf.name.replace(constants.CONF_PREFIX,""));
         //AIM_start.lbl_actualConf.setText(actualConf.name.replace(constants.CONF_PREFIX,"")); TODO: set new actualConf on homescreen
+        System.out.println("sending Broadcast");
         Intent pubIntent = new Intent(constants.INTENT_FILTER_ACTUALCONF);
         pubIntent.putExtra(constants.INTENT_FILTER_ACTUALCONF, actualConf.name.replace(constants.CONF_PREFIX, ""));
         sendBroadcast(pubIntent);

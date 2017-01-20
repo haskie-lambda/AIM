@@ -18,7 +18,7 @@
         <activity
             android:name=".AIM_start"
             android:configChanges="orientation"
-            android:label="AIM"
+            android:label=""
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
