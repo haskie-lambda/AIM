@@ -1,6 +1,7 @@
-# AIM
-Analysis of the Interplanetary Magnetic field data - Android App, Java
+# AIM OS
+Analysis of the Interplanetary Magnetic field data; Open Sense- Android App, Java
 
+##History
 This is an Android App. designed for analyising the interplanetary magneticfield fluctuations between sun and earth, obtained from the GEOS-Satellite.
 The main purpose of the  app was to categorize the fluctuations in real-time and to generate tone signals that map to the signal-strengths. 
 In this context, the signal strengths (integer data from 0 to 4) are converted to the corresponding tones and then sent to the audio Output.
