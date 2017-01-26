@@ -88,6 +88,12 @@ public class AIM_start extends AppCompatActivity {
             }
         });
 
+        lbl_actualConf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lbl_actualConf.setText(getActualConfigName());
+            }
+        });
 
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override

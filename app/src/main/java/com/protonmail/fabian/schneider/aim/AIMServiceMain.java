@@ -367,8 +367,6 @@ public class AIMServiceMain extends Service {
     }
 
 
-//TODO: service not analysing data correctly
-
     //AIM Methods
     protected void play(String... values) {
         if (values[0].equals("Current data is not okay") || values[0].equals("Data Date not okay")) {

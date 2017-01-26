@@ -84,7 +84,7 @@ public class activity_config_cat_sensor extends AppCompatActivity {
                     actualLayout = (LinearLayout) parentLayout.getChildAt(i);
                     from = ((TextView) actualLayout.getChildAt(0)).getText().toString();
                     to = ((TextView) actualLayout.getChildAt(1)).getText().toString();
-                    strength = getActualSpinnerValue((Spinner) actualLayout.getChildAt(2)); //((Spinner) actualLayout.getChildAt(2).get)
+                    strength = getActualSpinnerValue((Spinner) actualLayout.getChildAt(2)); //TODO: not getting value right
                     strengths.add(from + "," + to + "," + strength);
                 }
 

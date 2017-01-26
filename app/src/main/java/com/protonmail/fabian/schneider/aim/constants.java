@@ -30,25 +30,25 @@ public class constants extends Application {
 
     public static final String CONF_PREFIX = "conf_";
 
-    public static final String INTENT_EXTRA_ACTUAL_SOURCE_PATH = "actualSourcePath";
-    public static final String INTENT_EXTRA_ACTUAL_SENSOR = "actualSensor";
-    public static final String INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY = "actualStrengthArray";
-    public static final String INTENT_EXTRA_SOURCE_URL = "sourceURL";
-    public static final String INTENT_EXTRA_ERROR_PATTERN = "errorPattern";
-    public static final String INTENT_EXTRA_DATA_RESTRICTION = "dataRest";
-    public static final String INTENT_EXTRA_SATELLITE_CONFIG = "satelliteConfig";
-    public static final String INTENT_EXTRA_RETURN = "config_return";
-    public static final String INTENT_EXTRA_RETURN_SENSOR = "sensor_return";
-    public static final String INTENT_EXTRA_RETURN_SATELLITE = "satellite_return";
-    public static final String INTENT_EXTRA_RETURN_SARRAY = "sArray_return";
-    public static final String INTENT_EXTRA_ONLINE_LOCAL = "onloc";
-    public static final String INTENT_EXTRA_DATA_RESTRICTION_BY = "dataRestBy";
-    public static final String INTENT_EXTRA_DATA_LINE_IN_FILE = "dataLineRest";
-    public static final String INTENT_EXTRA_RETURN_ONLINEFILE = "return_online";
+    public static final String INTENT_EXTRA_ACTUAL_SOURCE_PATH = "com.protonmail.fabian.schneider.aim.actualSourcePath";
+    public static final String INTENT_EXTRA_ACTUAL_SENSOR = "com.protonmail.fabian.schneider.aim.actualSensor";
+    public static final String INTENT_EXTRA_ACTUAL_STRENGTH_ARRAY = "com.protonmail.fabian.schneider.aim.actualStrengthArray";
+    public static final String INTENT_EXTRA_SOURCE_URL = "com.protonmail.fabian.schneider.aim.sourceURL";
+    public static final String INTENT_EXTRA_ERROR_PATTERN = "com.protonmail.fabian.schneider.aim.errorPattern";
+    public static final String INTENT_EXTRA_DATA_RESTRICTION = "com.protonmail.fabian.schneider.aim.dataRest";
+    public static final String INTENT_EXTRA_SATELLITE_CONFIG = "com.protonmail.fabian.schneider.aim.satelliteConfig";
+    public static final String INTENT_EXTRA_RETURN = "com.protonmail.fabian.schneider.aim.config_return";
+    public static final String INTENT_EXTRA_RETURN_SENSOR = "com.protonmail.fabian.schneider.aim.sensor_return";
+    public static final String INTENT_EXTRA_RETURN_SATELLITE = "com.protonmail.fabian.schneider.aim.satellite_return";
+    public static final String INTENT_EXTRA_RETURN_SARRAY = "com.protonmail.fabian.schneider.aim.sArray_return";
+    public static final String INTENT_EXTRA_ONLINE_LOCAL = "com.protonmail.fabian.schneider.aim.onloc";
+    public static final String INTENT_EXTRA_DATA_RESTRICTION_BY = "com.protonmail.fabian.schneider.aim.dataRestBy";
+    public static final String INTENT_EXTRA_DATA_LINE_IN_FILE = "com.protonmail.fabian.schneider.aim.dataLineRest";
+    public static final String INTENT_EXTRA_RETURN_ONLINEFILE = "com.protonmail.fabian.schneider.aim.return_online";
 
-    public static final String INTENT_FILTER_STRENGTH = "strength";
-    public static final String INTENT_FILTER_ADINFO = "adinfo";
-    public static final String INTENT_FILTER_ACTUALCONF = "intFilterActualConf";
+    public static final String INTENT_FILTER_STRENGTH = "com.protonmail.fabian.schneider.aim.strength";
+    public static final String INTENT_FILTER_ADINFO = "com.protonmail.fabian.schneider.aim.adinfo";
+    public static final String INTENT_FILTER_ACTUALCONF = "com.protonmail.fabian.schneider.aim.intFilterActualConf";
 
     public static final String SENSOR_CHECK_TEMP = "Temp";
 

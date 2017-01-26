@@ -186,7 +186,7 @@ public class Settings extends AppCompatActivity {
                         break;
                     case constants.ST_FILE_SOURCE:
                         act = constants.ST_FILE_SOURCE;
-                        intent = new Intent(settingsContext, activity_config_onlineFiles.class); //TODO: change eventually
+                        intent = new Intent(settingsContext, activity_config_onlineFiles.class);
                         intent.putExtra(constants.INTENT_EXTRA_DATA_RESTRICTION, actualConf.restFrom + "," + actualConf.restTo +"," + actualConf.restBy);
                         intent.putExtra(constants.INTENT_EXTRA_ONLINE_LOCAL, constants.PST_OFFLINE);
                         break;
@@ -337,9 +337,12 @@ public class Settings extends AppCompatActivity {
         prefEditor.putString(constants.SHAREDPREF_ACTUAL_CONFIG, actualConf.name).commit();
         setActualConfig();
 
+        System.out.println("sending braodcast");
         Intent pubIntent = new Intent(constants.INTENT_FILTER_ACTUALCONF);
         pubIntent.putExtra(constants.INTENT_FILTER_ACTUALCONF, actualConf.name.replace(constants.CONF_PREFIX, ""));
-        sendBroadcast(pubIntent);
+        pubIntent.setClass(settingsContext, AIM_start.class);
+
+        settingsContext.sendBroadcast(pubIntent);
     }
 
 
@@ -389,7 +392,6 @@ public class Settings extends AppCompatActivity {
         sb_MessFunc.setProgress(actualConf.readMessages ? 1:0);
 
         userDefinedConfigName.setText(actualConf.name.replace(constants.CONF_PREFIX,""));
-        //AIM_start.lbl_actualConf.setText(actualConf.name.replace(constants.CONF_PREFIX,"")); TODO: set new actualConf on homescreen
         System.out.println("sending Broadcast");
         Intent pubIntent = new Intent(constants.INTENT_FILTER_ACTUALCONF);
         pubIntent.putExtra(constants.INTENT_FILTER_ACTUALCONF, actualConf.name.replace(constants.CONF_PREFIX, ""));
